@@ -1,111 +1,130 @@
-# 文献与软件来源
+# References and selection notes
 
-核对日期：2026-10-27。条目按 proposal 引用顺序排列。论文支撑研究论断；软件文档说明实现接口；上游论文中的结果不作为 EviRecall 的结果。
+Primary sources reviewed for proposal v0.2, 27 October 2026. Bibliographic metadata: [BibTeX](references.bib). Local source snapshots live in `project/library/`, outside this repository; their manifest records full commits and PDF hashes. Inclusion here does not make a resource a required experiment.
 
 <a id="smurfs"></a>
-## [1] Smurfs
+## 1. Smurfs: Multi-Agent System using Context-Efficient DFSDT for Tool Planning
 
-Junzhi Chen, Juhao Liang, Benyou Wang. **Smurfs: Multi-Agent System using Context-Efficient DFSDT for Tool Planning.** NAACL 2025, pp. 3281-3298. DOI: 10.18653/v1/2025.naacl-long.169.
+Selected backbone. Read inference/smurfs_worker.py and the planner/executor/answer/verifier roles. The memory_agent.py placeholder is empty in the pinned snapshot; persistent memory is proposed work.
 
-- [正式论文](https://aclanthology.org/2025.naacl-long.169/)
-- [代码](https://github.com/FreedomIntelligence/Smurfs)
-- 用途：执行底座、角色分工和上下文效率的研究来源。
-- 边界：原论文任务与本项目拟用任务不同；迁移后的结果需重新评测。
+[Paper](https://aclanthology.org/2025.naacl-long.169.pdf) · [Repository](https://github.com/FreedomIntelligence/Smurfs). Source snapshot: `0f5c44701f6c9e5ac9caed9edc4ce16ad9c430c3`.
 
 <a id="tiermem"></a>
-## [2] TierMem 论文
+## 2. From Lossy to Verified: A Provenance-Aware Tiered Memory for Agents
 
-Qiming Zhu, Shunian Chen, Rui Yu, Zhehao Wu, Benyou Wang. **From Lossy to Verified: A Provenance-Aware Tiered Memory for Agents.** arXiv:2602.17913, 2026.
+Read the paper and jev_tiermem/system.py separately. The trained paper router and lightweight Jev implementation are not the same baseline. The downloaded preprint is verified; the separate OpenReview PDF returned HTTP 403.
 
-- [可核对的预印本](https://arxiv.org/abs/2602.17913)
-- [作者仓库](https://github.com/FreedomIntelligence/Tiermem)
-- [会议记录入口](https://openreview.net/forum?id=svKCa4itcd)
-- 版本说明：仓库标题更新为 *TierMem: Balancing Compressed Memory and Raw Evidence for Long-Horizon Agent Memory* 并标注 COLM 2026。OpenReview 页面本次访问遇到浏览器验证；BibTeX 使用已核实的预印本，不混写成已核对的会议题录。
-- 用途：摘要 / 原文分层、充分性路由和有来源的写回。
-- 边界：论文版路由训练和 Jev 轻量应用分开描述，不移用论文指标。
+[Paper](https://arxiv.org/pdf/2602.17913) · [Repository](https://github.com/FreedomIntelligence/Tiermem). Source snapshot: `d0d3896e917117ba0fcc1501e2b2dae891d2a2e3`.
 
 <a id="jev"></a>
-## [3] Jev TierMem 软件
+## 3. Jev TierMem (software)
 
-FreedomIntelligence. **Jev TierMem: Lightweight Agent Memory.** Tiermem 仓库的软件文档与源码，访问于 2026-10-27。
+Lightweight software in the TierMem repository, distinct from the trained-router paper implementation. Relevant operations: observe, add_summary, retrieve, promote. Real service access and end-to-end integration remain pilot checks.
 
-- [介绍](https://github.com/FreedomIntelligence/Tiermem/tree/main/jev_tiermem)
-- [Python 接入示例](https://github.com/FreedomIntelligence/Tiermem/blob/main/jev_tiermem/examples/README.md)
-- 核对提交：`d0d3896e917117ba0fcc1501e2b2dae891d2a2e3`。
-- 用途：记忆接口、provider 依赖、存储方式与具体接入约束。
-- 边界：软件来源，不冒充独立同行评审论文；模拟 provider 检查不等于真实服务验证。
+[Pinned source](https://github.com/FreedomIntelligence/Tiermem/tree/d0d3896e917117ba0fcc1501e2b2dae891d2a2e3/jev_tiermem).
 
 <a id="longmemeval"></a>
-## [4] LongMemEval
+## 4. LongMemEval: Benchmarking Chat Assistants on Long-Term Interactive Memory
 
-Di Wu, Hongwei Wang, Wenhao Yu, Yuwei Zhang, Kai-Wei Chang, Dong Yu. **LongMemEval: Benchmarking Chat Assistants on Long-Term Interactive Memory.** ICLR 2025; arXiv:2410.10813。
+Primary general-memory evaluation: 500 questions. Use the cleaned release; S/M/oracle are context variants, not train/dev/test. Strip answer and evidence-location labels before ingestion.
 
-- [论文](https://arxiv.org/abs/2410.10813)
-- [代码及使用说明](https://github.com/xiaowu0162/LongMemEval)
-- [清洗版数据](https://huggingface.co/datasets/xiaowu0162/longmemeval-cleaned)
-- 用途：记忆能力评测与证据会话标注。
-- 边界：S/M/oracle 不是数据划分；目前推荐使用 V1 清洗版，不能把 V2 的不同任务与结果混入。下载时进一步固定数据 revision 和哈希。
+[Paper](https://arxiv.org/pdf/2410.10813) · [Repository](https://github.com/xiaowu0162/LongMemEval). Source snapshot: `9e0b455f4ef0e2ab8f2e582289761153549043fc`.
 
 <a id="memoryarena"></a>
-## [5] MemoryArena
+## 5. MemoryArena: Benchmarking Agent Memory in Interdependent Multi-Session Agentic Tasks
 
-Zexue He et al. **MemoryArena: Benchmarking Agent Memory in Interdependent Multi-Session Agentic Tasks.** arXiv:2602.16313，v2，2026。arXiv 记录标注 ICML 2026。
+Candidate action environment. Read setup_travel.md: 270 groups, local CSV tools, separately hosted flight database. Repository labels itself preview. Pilot before promising integration; prevent ground-truth feedback from reaching the agent.
 
-- [论文](https://arxiv.org/abs/2602.16313)
-- [代码](https://github.com/ZexueHe/MemoryArena)
-- [旅行规划环境](https://github.com/ZexueHe/MemoryArena/blob/main/setup_travel.md)
-- [数据](https://huggingface.co/datasets/ZexueHe/memoryarena)
-- 用途：记忆如何服务后续行动。
-- 边界：仓库标为预览版，旅行环境需要另取大型航班 CSV；多会话 / 多人规划不是天然多 Agent。需固定环境和 judge / feedback 模式。
+[Paper](https://arxiv.org/pdf/2602.16313) · [Repository](https://github.com/ZexueHe/MemoryArena). Source snapshot: `6cd9de14b71915e39ac742a20dc33785e14b6aab`.
 
 <a id="mast"></a>
-## [6] MAST
+## 6. Why Do Multi-Agent LLM Systems Fail?
 
-Mert Cemri et al. **Why Do Multi-Agent LLM Systems Fail?** arXiv:2503.13657，2025。
+Failure-analysis reference: downloaded paper v3 describes 1,600+ annotated traces, 7 frameworks, and 14 failure modes. The older README links MAD; use the paper-linked MAST-Data release/version explicitly. Not an executable memory-training benchmark.
 
-- [论文](https://arxiv.org/abs/2503.13657)
-- [作者代码与数据](https://github.com/multi-agent-systems-failure-taxonomy/MAST)
-- 用途：错误分类与轨迹分析的方法参考。
-- 边界：不同版本的数据规模有变化，不用早期摘要数字混写最终版本；MAST 不直接提供本项目所有“过期记忆传播”标签。
+[Paper](https://arxiv.org/pdf/2503.13657) · [Repository](https://github.com/multi-agent-systems-failure-taxonomy/MAST). Source snapshot: `a70542e541b2104ef8fcd785778179e173fb8d70`.
 
 <a id="governed"></a>
-## [7] Governed Shared Memory
+## 7. Governed Shared Memory for Multi-Agent LLM Systems
 
-Yanki Margalit, Nurit Cohen-Inger, Erni Avram, Ran Taig, Oded Margalit. **Governed Shared Memory for Multi-Agent LLM Systems.** arXiv:2606.24535，2026。
+Related shared-state architecture. The current Caura (formerly MemClaw) repository is available; it is not the exact paper-version service. The separate paper-linked ArgusFleet harness is unavailable at the supplied URL. Do not claim full paper reproduction from Caura alone.
 
-- [预印本](https://arxiv.org/abs/2606.24535)
-- 用途：过期传播、矛盾与来源治理的近邻工作，帮助限定贡献范围。
-- 边界：作者说明其评估侧重真实服务及架构发现，不直接提供与本方案相同条件的算法优越性结论。
+[Paper](https://arxiv.org/pdf/2606.24535) · [Repository](https://github.com/caura-ai/caura). Source snapshot: `6904eef15f06817573b616b33640aadc5638d8c3`.
 
 <a id="deepagents"></a>
-## [8] Deep Agents
+## 8. Deep Agents
 
-LangChain. **Deep Agents overview.** 官方软件文档，访问于 2026-10-27。
+Engineering alternative. Read the official repository documentation for subagents, context handling, and memory. No separate research paper is assigned here; built-in features are upstream contributions.
 
-- [文档](https://docs.langchain.com/oss/python/deepagents/overview)
-- [代码](https://github.com/langchain-ai/deepagents)
-- 用途：曾比较的工程底座、子 Agent 和上下文管理思路。
-- 边界：本项目已选 Smurfs；该文档不是本项目方法贡献，也不引入第二个执行框架。
+[Repository](https://github.com/langchain-ai/deepagents). Source snapshot: `3413029245643eb9915b506def3e4817af548f0e`.
 
 <a id="memoryagentbench"></a>
-## [9] MemoryAgentBench
+## 9. Evaluating Memory in LLM Agents via Incremental Multi-Turn Interactions
 
-MemoryAgentBench authors. **Evaluating Memory in LLM Agents via Incremental Multi-Turn Interactions.** 此处引用作者代码仓库及数据说明，访问于 2026-10-27。
+Fallback and broader memory reference. Covers retrieval, test-time learning, long-range understanding, and selective forgetting. Some sources overlap LongMemEval; it is not automatically an independent second test set.
 
-- [仓库](https://github.com/HUST-AI-HYZ/MemoryAgentBench)
-- [数据](https://huggingface.co/datasets/ai-hyz/MemoryAgentBench)
-- 用途：冲突消解等记忆能力的备选评测。
-- 边界：完整集合含 LongMemEval 相关来源，不能将两者不加检查地当作独立训练 / 测试来源；如采用需固定具体子集并查重。
+[Paper](https://arxiv.org/pdf/2507.05257) · [Repository](https://github.com/HUST-AI-HYZ/MemoryAgentBench). Source snapshot: `538026089d1a8a8eff05121d0db89b388f360eba`.
+
+<a id="stale"></a>
+## 10. STALE: Can LLM Agents Know When Their Memories Are No Longer Valid?
+
+Primary stale-memory evaluation: 400 scenarios and 1,200 queries. Includes CUP-Mem, a close baseline for write-time state revision. Official dataset exists on Hugging Face; generation scripts alone are not the released benchmark. Distractors reuse LongMemEval material.
+
+[Paper](https://arxiv.org/pdf/2605.06527) · [Repository](https://github.com/icedreamc/STALE). Source snapshot: `ea7d391103a151927cd29d2f01d87597a782bdcb`.
+
+<a id="magentic"></a>
+## 11. Magentic-One: A Generalist Multi-Agent System for Solving Complex Tasks
+
+Paper plus Microsoft AutoGen source. Current implementation is under python/packages/autogen-ext/src/autogen_ext/teams/magentic_one; the earlier autogen-magentic-one package is deprecated. Current AutoGen README announces archival; this is an architectural reference, not the selected backbone.
+
+[Paper](https://arxiv.org/pdf/2411.04468) · [Repository](https://github.com/microsoft/autogen). Source snapshot: `004749e6b7102c8fd317b9b1499ce5807223c278`.
+
+<a id="twinmarket"></a>
+## 12. TwinMarket: A Scalable Behavioral and Social Simulation for Financial Markets
+
+Teacher-team finance/social-simulation reference. Requires a different domain and evaluation design; not a required implementation target.
+
+[Paper](https://arxiv.org/pdf/2502.01506) · [Repository](https://github.com/FreedomIntelligence/TwinMarket). Source snapshot: `de5f2446fcba0d0aba533a6adaede034160e29b4`.
+
+<a id="easymed"></a>
+## 13. Human or LLM as Standardized Patients? A Comparative Study in Medical Education
+
+Teacher-team medical-education reference. Local PDF title uses 'in Medical Education'; repository citation uses 'for Medical Education'. Same arXiv identifier; preserve the title/version distinction.
+
+[Paper](https://arxiv.org/pdf/2511.14783) · [Repository](https://github.com/FreedomIntelligence/EasyMED). Source snapshot: `c1c32a4ddb6671f069d77d1a4caf454c42c3c741`.
+
+<a id="amem"></a>
+## 14. A-MEM: Agentic Memory for LLM Agents
+
+Additional memory-method reading: dynamic notes, links, and memory evolution. Runtime repository and paper evaluation repository are separate.
+
+[Paper](https://arxiv.org/pdf/2502.12110) · [Repository](https://github.com/agiresearch/A-mem). Source snapshot: `ceffb860f0712bbae97b184d440df62bc910ca8d`.
+
+<a id="mem0"></a>
+## 15. Mem0: Building Production-Ready AI Agents with Scalable Long-Term Memory
+
+Additional engineering and memory-update reference. Current software has evolved since the paper; version-pin comparisons instead of inheriting paper scores.
+
+[Paper](https://arxiv.org/pdf/2504.19413) · [Repository](https://github.com/mem0ai/mem0). Source snapshot: `26cdefb46600c0fa5953c4b5ee5003c125539fc4`.
 
 <a id="course"></a>
-## [10] 2026 秋季课程要求
+## 16. Course requirements
 
-**CSC5051 / CSC6052 / MDS5110 Natural Language Processing, Fall 2026.** 课程网站，访问于 2026-10-27。
+[Fall 2026 website](https://nlp-course-cuhksz.github.io/) and local Lecture 1, PDF pp.21/27/30/34. The website-linked final-project deck identifies itself as Spring 2026. See the [plan](plan.md#course-deliverables-and-source-conflicts) for source conflicts and submission requirements.
 
-- [官网](https://nlp-course-cuhksz.github.io/)
-- 用途：项目报告的动机、引用、技术方法、合理评测和个人贡献要求。
-- 边界：官网最终报告页数不自动套用到 proposal；过去课件 / 春季模板中的日期不能直接当作本学期截止日期。正式模板、语言与最新截止以课程通知核对。
+## Supplementary resources
 
-## 额外候选：LoCoMo
+- [Evaluating Very Long-Term Conversational Memory of LLM Agents](https://github.com/snap-research/locomo): Optional dialogue-memory cross-check and TierMem context. Split by complete conversation, not arbitrary questions. Not required in the initial experiment matrix.
+- [LangGraph](https://github.com/langchain-ai/langgraph): State/checkpoint/store reference supporting the engineering alternative. No separate paper is assigned. Framework persistence alone does not verify semantic correctness of recalled facts.
+- [A-MEM paper evaluation implementation](https://github.com/WujiangXu/AgenticMemory): Companion evaluation repository linked by the A-MEM authors. Shares the a-mem.pdf paper; do not count it as a separate paper.
+- [ArgusFleet: Governed Shared Memory evaluation harness](https://github.com/caura-ai/argusfleet): Paper-linked evaluation harness: clone returned Repository not found on 2026-10-27. Paper section 6.2 cites trace commit 2c55bb5. Retain this missing artifact in the manifest rather than replacing it with unrelated code.
 
-[作者仓库](https://github.com/snap-research/locomo) 提供长期会话数据。若最终转向直接复现 TierMem，可考虑它与 LongMemEval 的组合；两套会话问答不等于已完成交互行动评测。使用时按完整会话隔离，不随机拆同一会话的 QA。
+Dataset releases:
+
+- [LongMemEval cleaned](https://huggingface.co/datasets/xiaowu0162/longmemeval-cleaned)
+- [STALE (official 400 scenarios)](https://huggingface.co/datasets/STALEproj/STALE)
+- [MAST-Data (paper v3 link)](https://huggingface.co/datasets/mcemri/MAST-Data)
+- [MemoryArena](https://huggingface.co/datasets/ZexueHe/memoryarena)
+- [MemoryAgentBench](https://huggingface.co/datasets/ai-hyz/MemoryAgentBench)
+
+Availability limits: the paper-linked ArgusFleet repository returned Repository not found; TierMem's separate OpenReview PDF returned HTTP 403. The TierMem arXiv PDF, Jev source, Governed Shared Memory paper, and current Caura source were collected. These are distinct artifacts, not interchangeable reproduction packages.

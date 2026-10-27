@@ -26,6 +26,12 @@ CITATIONS = {
     "governed": "governed2026",
     "deepagents": "deepagents2026",
     "memoryagentbench": "memoryagentbench2026",
+    "stale": "stale2026",
+    "magentic": "magentic2024",
+    "twinmarket": "twinmarket2025",
+    "easymed": "easymed2025",
+    "amem": "amem2025",
+    "mem0": "mem02025",
     "course": "course2026",
 }
 
@@ -120,7 +126,7 @@ def render_body() -> str:
         if paragraph:
             text = " ".join(paragraph)
             rendered = inline(text)
-            if text.startswith("**成员 "):
+            if text.startswith("**Member "):
                 rendered = r"\begin{samepage}" + rendered + r"\par\end{samepage}"
             output.append(rendered + "\n")
             paragraph.clear()
@@ -158,14 +164,16 @@ def main() -> None:
     args = parser.parse_args()
     preamble = r"""% Generated from docs/proposal.md and docs/references.bib.
 % Edit those sources, then run python scripts/build_proposal.py.
-\documentclass[UTF8,a4paper,zihao=5]{ctexart}
+\documentclass[a4paper,10pt]{article}
 \usepackage[margin=21mm,top=18mm,bottom=20mm]{geometry}
 \usepackage{xcolor}
 \definecolor{accent}{HTML}{204B63}
 \usepackage[colorlinks=true,linkcolor=accent,urlcolor=accent,citecolor=accent]{hyperref}
 \usepackage{enumitem}
 \setlist[itemize]{leftmargin=1.5em,topsep=3pt,itemsep=2pt,parsep=0pt}
-\ctexset{section={format=\large\bfseries,beforeskip=11pt,afterskip=4pt}}
+\usepackage{titlesec}
+\titleformat{\section}{\large\bfseries}{\thesection}{0.6em}{}
+\titlespacing*{\section}{0pt}{10pt}{4pt}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{4pt}
 \linespread{1.05}
@@ -174,10 +182,10 @@ def main() -> None:
 \widowpenalty=10000
 \emergencystretch=3em
 \sloppy
-\hypersetup{pdftitle={EviRecall Proposal v0.1},pdfauthor={EviRecall Team}}
+\hypersetup{pdftitle={EviRecall Proposal v0.2},pdfauthor={EviRecall Team}}
 \begin{document}
 {\color{accent}\LARGE\bfseries EviRecall}\par
-{\large\bfseries 面向多智能体长程任务的证据感知记忆}\par
+{\large\bfseries Evidence-Aware Memory for Long-Horizon Multi-Agent Tasks}\par
 \vspace{4pt}\hrule\vspace{7pt}
 """
     source = preamble + render_body() + "\n" + bibliography() + "\n\\end{document}\n"
@@ -195,14 +203,14 @@ def main() -> None:
         if "miktex" in version.stdout.lower():
             command.append("--disable-installer")
         command += ["-interaction=nonstopmode", "-halt-on-error",
-                    f"-output-directory={output_dir}", "-jobname=evirecall-proposal-v0.1", str(tex_path)]
+                    f"-output-directory={output_dir}", "-jobname=evirecall-proposal-v0.2", str(tex_path)]
         for _ in range(2):
             result = subprocess.run(command, cwd=DOCS, capture_output=True, encoding="utf-8", errors="replace")
             if result.returncode:
                 print(result.stdout[-6000:])
                 print(result.stderr[-2000:])
                 raise SystemExit(result.returncode)
-        print(f"Built {(output_dir / 'evirecall-proposal-v0.1.pdf').relative_to(ROOT)}")
+        print(f"Built {(output_dir / 'evirecall-proposal-v0.2.pdf').relative_to(ROOT)}")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,118 @@
+% Generated from docs/proposal.md and docs/references.bib.
+% Edit those sources, then run python scripts/build_proposal.py.
+\documentclass[UTF8,a4paper,zihao=5]{ctexart}
+\usepackage[margin=21mm,top=18mm,bottom=20mm]{geometry}
+\usepackage{xcolor}
+\definecolor{accent}{HTML}{204B63}
+\usepackage[colorlinks=true,linkcolor=accent,urlcolor=accent,citecolor=accent]{hyperref}
+\usepackage{enumitem}
+\setlist[itemize]{leftmargin=1.5em,topsep=3pt,itemsep=2pt,parsep=0pt}
+\ctexset{section={format=\large\bfseries,beforeskip=11pt,afterskip=4pt}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\linespread{1.05}
+\pagestyle{plain}
+\clubpenalty=10000
+\widowpenalty=10000
+\emergencystretch=3em
+\sloppy
+\hypersetup{pdftitle={EviRecall Proposal v0.1},pdfauthor={EviRecall Team}}
+\begin{document}
+{\color{accent}\LARGE\bfseries EviRecall}\par
+{\large\bfseries 面向多智能体长程任务的证据感知记忆}\par
+\vspace{4pt}\hrule\vspace{7pt}
+\textbf{Evidence-Aware Memory for Long-Horizon Multi-Agent Tasks}
+
+\textbf{版本：v0.1，2026-10-27。状态：供组内与教师反馈的研究计划。}
+
+三人课程项目。已确定采用 Smurfs；拟评估 Jev TierMem 接入。方法、数据集和规模尚未冻结，本文不包含已完成的端到端实验或效果承诺。成员姓名与最终分工待团队填写。
+
+\section{研究动机与问题}
+长程任务中，多 Agent 需要复用历史工具结果和阶段结论。摘要可能遗漏决定性约束；一个 Agent 的推断也可能被另一 Agent 当作事实继续传播。即使保留来源，当原始信息被纠正后，依赖旧信息的摘要和计划也可能继续被使用。
+
+例如，执行 Agent 记录某行程满足旧预算，后续用户收紧预算；规划 Agent 仍沿用旧摘要，验证 Agent 若仅阅读候选答案，也可能错过已变化的约束。该例用于说明研究场景，不属于已观测的 benchmark 结果。
+
+本项目围绕三个问题开展研究：
+
+\begin{itemize}
+\item \textbf{RQ1：接入价值。} 在相同 Smurfs 架构和任务模型下，分层记忆能否改善跨会话证据恢复和任务完成情况？
+\item \textbf{RQ2：机制价值。} 在受控的约束更新场景中，记录证据依赖并处理失效摘要，能否减少旧结论传播？
+\item \textbf{RQ3：成本边界。} 在不同检索预算、服务并发与延迟条件下，质量、调用成本和完成时间如何变化？
+\end{itemize}
+\section{相关工作与贡献边界}
+Smurfs 提供上下文高效的多 Agent 工具规划，为本项目的执行底座 \cite{smurfs2025}。TierMem 研究摘要与原始证据之间的分层访问 \cite{tiermem2026}；其仓库另提供 Jev TierMem 轻量应用 \cite{jev2026}。论文的训练路由器和 Jev 应用是不同实现，不能直接移用论文成绩说明 Jev 的效果。
+
+LongMemEval 测长期交互记忆能力 \cite{longmemeval2025}，MemoryArena 测记忆与后续行动相互依赖的任务 \cite{memoryarena2026}。MAST 可提供失败分析的分类参考 \cite{mast2025}。已有共享记忆研究也明确讨论过期信息、矛盾与来源追踪 \cite{governed2026}。
+
+因此，本项目不把“多 Agent 加记忆”“摘要关联原文”或“有版本号”单独宣称为新算法。\textbf{预期交付}是 Smurfs 的可替换记忆适配、针对一种明确更新场景的改进，以及固定资源条件下的对照与消融。创新程度仍需进一步阅读最接近的工作后界定；复现、系统适配和负结果也纳入报告。
+
+\section{选型比较与当前决定}
+\textbf{执行底座：选 Smurfs。} 它具备规划、执行、回答与验证角色，论文和代码来源明确，符合团队采用教师工作的决定。此前考虑的 Deep Agents 具有子 Agent 与上下文管理能力 \cite{deepagents2026}，但本阶段不再建设第二套执行底座。Smurfs 仍需适配新任务环境和可复现运行接口，不能视为已具有跨会话共享记忆。
+
+\textbf{记忆实现：优先验证 Jev TierMem。} 它使用 Markdown 笔记、SQLite 原始历史及 Jev 充分性判断，便于通过 Python 接入，不需要先训练路由器或部署向量库。代价是依赖独立 Jev 服务，且共享任务状态、失效管理和完整实验计费仍需补充。论文版 TierMem 可作为后续参考，但首版不同时引入其训练和服务栈。
+
+\textbf{接入方式：优先 Python，MCP 作为后续选项。} 直接调用接口便于控制何时记录、何时检索以及如何统计成本。MCP 更适合跨进程和跨宿主复用，但不能自动解决共享记忆一致性；本阶段优先缩小集成变量。
+
+\textbf{数据：建议 LongMemEval\_S 清洗版与 MemoryArena 旅行规划子任务。} 前者定位记忆问题，后者检验行动价值。LoCoMo 可作为对齐 TierMem 的备选；如第二套环境接入超出预算，可用 MemoryAgentBench 的冲突消解子集降级，但这时结论限于记忆评测，不能声称已验证长程行动效果 \cite{memoryagentbench2026}。两套数据的最终选择在可行性阶段冻结。
+
+\section{拟议方法与接入设计}
+\textbf{组件职责。} Smurfs 保留任务规划和执行主循环；EviRecall 适配层管理任务标识、调用预算、证据封装与轨迹；Jev TierMem 保存摘要和原文、按需返回证据。Smurfs verifier 判断任务答案，Jev 判断给定证据的充分性，二者的分数都不作为任务真实正确性的标签。
+
+\textbf{初始闭环。} 在规划和后续子任务开始前检索；在工具执行后通过 {\small\texttt{observe()}} 原样保存合法观测；在阶段结束后通过 {\small\texttt{add\_summary()}} 写入带来源摘要。通过 {\small\texttt{retrieve()}} 获取证据后，仍由 Smurfs 生成答案。需要写回恢复出的事实时显式调用 {\small\texttt{promote()}}；{\small\texttt{retrieve()}} 本身不会完成这一步。
+
+\textbf{证据边界。} 原始工具输出、用户声明、Agent 推断与 verifier 意见分别标记，避免将多 Agent 相互认可等同于事实验证。失败调用也保存状态和实际观测；成功任务之外的失败、超时和预算耗尽均计入评测。
+
+\textbf{共享范围。} 同一任务组的角色共享记忆，独立样本和不同实验条件隔离；跨会话连续任务保留组内历史。首版由一个协调进程串行管理写入。多角色不等于并行执行，也不等于必须部署多个模型。后续再测多个独立任务并发。
+
+\textbf{候选改进。} 在适配层维护原始事件到摘要、摘要到后续结论的依赖，以及有效、待复核、失效状态。先针对能从显式字段识别的约束更新：新事件保留原记录并标记被替代关系；检索时排除失效摘要，预算允许时回查并重建。自然语言自动冲突识别与更复杂依赖传播作为扩展。上述能力是待开发设计，不是 Jev 原生已验证功能。
+
+\section{数据与实验设计}
+\textbf{两个评测层次。} LongMemEval 以相同回答模型比较记忆方法，隔离检索影响，不强行为每道记忆问答添加多 Agent 角色。MemoryArena 在相同环境中接入完整 Smurfs，衡量任务成功与约束满足；该数据集的多会话设定并不自动构成多 Agent 实验。
+
+\textbf{基线。} 先比较近期窗口、普通检索、未修改的 Jev TierMem；再增加候选改进。检索基线优先复用相同原文分块和 SQLite FTS/BM25，以控制检索器差异；向量 RAG 作为可选追加。行动实验保留无持久记忆的 Smurfs。若讨论多 Agent 优势，另加相同记忆和总预算下的单 Agent 对照。
+
+\textbf{划分与泄漏控制。} 记忆写入不等于参数训练，首版无需训练模型。使用允许访问的历史作为输入，但标准答案、答案所在会话标注和评分字段只留在评测器中。LongMemEval 的 S、M、oracle 是历史设置而非 train/dev/test。开发与测试按完整历史、任务组及重叠内容分组隔离，不能随机拆同一历史中的问题；每种方法从独立初始存储开始。官方无合适划分时保存自定义划分清单，按子集报告，避免声称是官方全量分数。跨问题写回是否允许必须预先固定。
+
+\textbf{指标。} 记忆层采用官方问答评分，并按类别报告；依据来源标注测证据召回，但“引用 ID 有效”不等于语义得到支持。行动层采用官方任务成功和约束指标。扩展更新场景记录过期证据使用率、传播至后续决策的错误比例，以及纠正后的恢复成功率；逐项给出分母和判定规则，抽样人工复核。
+
+\textbf{资源核算。} 记录全部角色、摘要、检索规划、Jev 判断和重试的调用数、输入输出 token、端到端延迟与失败率；离线写入和在线查询成本分别报告。评测 judge 成本独立列出。服务不返回用量时标记未知，不能按零处理。跨方法控制总预算、工具权限和反馈条件；Jev 模型作为额外组件明确列出。
+
+\textbf{实验规模与消融。} 建议先用每套 5-10 个开发单元排查接入，再依据实测单位成本确定固定测试子集及重复次数。不得挑选成功样本替代预定子集。主要消融为关闭失效处理、关闭原文回查；在开发集选定阈值后冻结。资源实验优先改变一个因素，如检索预算或任务并发。对同一组任务配对比较，重复条件一致，报告样本数及按任务组估计的不确定性。
+
+原版 benchmark 与修改约束、注入错误、添加超时后的压力场景分开报告。通过 API 并发测试得到的是服务表现；没有自托管推理与硬件测量时，不宣称 GPU 调度收益。
+
+\section{三人分工与里程碑}
+\begin{samepage}\textbf{成员 A：项目统筹、协议与结果分析。} 由仓库发起人牵头，负责文献与 proposal、实验配置、数据划分、评测汇总和失败案例；与成员 C 共同审查适配接口，保证有可复现的技术交付。\par\end{samepage}
+
+\begin{samepage}\textbf{成员 B：记忆方法与算法实验。} 建议由偏算法成员承担，负责 Jev 接口封装、普通检索基线、证据依赖与失效机制、消融。输出可替换记忆策略和解释机制效果的实验记录。\par\end{samepage}
+
+\begin{samepage}\textbf{成员 C：Smurfs 集成与后端 / Infra。} 负责运行器、工具环境桥接、持久化与任务隔离、预算和超时、轨迹及并发压测；提供可测量的系统行为。若 A 更偏后端，可交换具体模块负责人，保留三人代码与分析责任。\par\end{samepage}
+
+阶段按启动后的相对周次规划，非教师截止日期：第 1 周完成可行性验证并冻结最小范围；第 2 周跑通原生 Smurfs 与基础记忆；第 3 周实现一种改进并冻结评测协议；第 4 周执行主要对照、消融和成本分析；第 5 周复现结果、制作演示与报告。每阶段留下配置、版本和可审查交付物，细分任务见团队计划。
+
+\section{风险、降级与验收}
+Jev 服务可用性、凭据和价格尚未确认。若不可用，采用显式命名的规则或通用模型充分性判断做替代实验，不能继续标为 Jev。原始上下文过长、摘要容量不足、旧 Smurfs 解析和重试行为均可能影响实验；修复须同步用于所有对照并记录差异。
+
+MemoryArena 若无法在可行性阶段跑通，按前述方案收缩结论。候选机制若不提升总体质量，仍分析其开销、适用场景与负结果，不预先填写提升百分比。
+
+最低验收为：一条有源码版本记录的 Smurfs 记忆调用链；至少一个现成数据集上的可复现比较；完整成本与失败统计；一种机制的消融；三人的独立贡献证据。目标验收进一步包含第二套行动评测与受控更新实验。\textbf{先验证可行性，再冻结最终计划。}
+
+\section{课程提交与参考资料}
+课程官网要求最终报告讨论动机、引用相关工作、解释方法与评测，并分析成功和失败；proposal 用于提前反馈 \cite{course2026}。本结构为团队建议，不冒充教师指定 proposal 模板。最终报告的 6 页上限不自动作为 proposal 的页数要求；提交语言、模板及时间以最新课程通知核对。
+
+完整题录、软件来源与版本见 参考资料 和 {\small\texttt{references.bib}}。本阅读版附有对应条目。讨论记录保留方案演进，正文只表述当前研究计划。
+
+\begin{thebibliography}{99}
+\small
+\bibitem{smurfs2025}Junzhi Chen, Juhao Liang, Benyou Wang. Smurfs: Multi-Agent System using Context-Efficient DFSDT for Tool Planning. 2025. NAACL, pp. 3281-3298. \href{https://aclanthology.org/2025.naacl-long.169/}{[source]}
+\bibitem{tiermem2026}Qiming Zhu, Shunian Chen, Rui Yu et al.. From Lossy to Verified: A Provenance-Aware Tiered Memory for Agents. 2026. arXiv:2602.17913. \href{https://arxiv.org/abs/2602.17913}{[source]}
+\bibitem{jev2026}FreedomIntelligence. Jev TierMem: Lightweight Agent Memory. 2026. Software documentation; accessed 2026-10-27. \href{https://github.com/FreedomIntelligence/Tiermem/tree/d0d3896e917117ba0fcc1501e2b2dae891d2a2e3/jev_tiermem}{[source]}
+\bibitem{longmemeval2025}Di Wu, Hongwei Wang, Wenhao Yu et al.. LongMemEval: Benchmarking Chat Assistants on Long-Term Interactive Memory. 2025. arXiv:2410.10813. \href{https://arxiv.org/abs/2410.10813}{[source]}
+\bibitem{memoryarena2026}Zexue He, Yu Wang, Churan Zhi et al.. MemoryArena: Benchmarking Agent Memory in Interdependent Multi-Session Agentic Tasks. 2026. arXiv:2602.16313. \href{https://arxiv.org/abs/2602.16313}{[source]}
+\bibitem{mast2025}Mert Cemri, Melissa Z. Pan, Shuyi Yang et al.. Why Do Multi-Agent LLM Systems Fail?. 2025. arXiv:2503.13657. \href{https://arxiv.org/abs/2503.13657}{[source]}
+\bibitem{governed2026}Yanki Margalit, Nurit Cohen-Inger, Erni Avram et al.. Governed Shared Memory for Multi-Agent LLM Systems. 2026. arXiv:2606.24535. \href{https://arxiv.org/abs/2606.24535}{[source]}
+\bibitem{deepagents2026}LangChain. Deep Agents Overview. 2026. Official software documentation; accessed 2026-10-27. \href{https://docs.langchain.com/oss/python/deepagents/overview}{[source]}
+\bibitem{memoryagentbench2026}MemoryAgentBench authors. MemoryAgentBench: Official Repository for Evaluating Memory in LLM Agents via Incremental Multi-Turn Interactions. 2026. Software and dataset documentation; accessed 2026-10-27. \href{https://github.com/HUST-AI-HYZ/MemoryAgentBench}{[source]}
+\bibitem{course2026}NLP Course, CUHK-Shenzhen. CSC5051/CSC6052/MDS5110 Natural Language Processing, Fall 2026. 2026. Course website; accessed 2026-10-27. \href{https://nlp-course-cuhksz.github.io/}{[source]}
+\end{thebibliography}
+\end{document}
