@@ -1,6 +1,8 @@
 # EviRecall: Evidence-Aware Memory for Long-Horizon Multi-Agent Tasks
 
-**Research proposal v0.5 | 28 October 2026 | CSC5051 / CSC6052 / MDS5110**
+**Natural Language Processing (CSC5051 / CSC6052 / MDS5110)**
+
+**Project Proposal | Fall 2026 | 28 October 2026**
 
 **Project repository:** [github.com/SatouJotaro/evirecall](https://github.com/SatouJotaro/evirecall)
 

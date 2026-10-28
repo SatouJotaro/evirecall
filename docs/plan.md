@@ -1,6 +1,6 @@
 # EviRecall execution plan
 
-Working agreement, updated 28 October 2026. Research design: [English proposal](proposal.md). Upstream links and selection notes: [references](references.md). This is a plan for the three members to implement; interfaces below are proposed contracts, not existing APIs.
+Proposal finalized for submission on 28 October 2026. Research design: [English proposal](proposal.md). Upstream links and selection notes: [references](references.md). This is a plan for the three members to implement; interfaces below are proposed contracts, not existing APIs.
 
 ## Scope to freeze after the pilot
 
@@ -91,7 +91,7 @@ Checked 27 October 2026 against the local **Lecture 1: Introduction**, PDF pages
 - Lecture 1 p.27 retains March/May dates and a one-page proposal suggestion; p.30 gives a tentative 1 November proposal date and says custom topics need approval. The current website lists proposal as optional for feedback. Submit this custom topic for instructor/TA feedback; do not interpret the older page as a final Fall deadline or confirmed current proposal-length rule.
 - The website's final-project slides link currently opens **Spring 2026** slides. Their 15%/40% split, four-minute presentation, May deadlines, BB submission details, and older template must not be silently imported into Fall requirements. Those sources are preserved in the local library for comparison.
 
-This English proposal is a working research document, not a claim to use an approved proposal template. The team roster is populated. Confirm the current submission instructions and final responsibility allocation before submission.
+The English proposal and team roster are finalized for submission. Implementation will follow the shared contracts and feasibility checks above.
 
 ## Decision history
 

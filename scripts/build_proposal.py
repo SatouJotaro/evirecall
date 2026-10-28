@@ -18,7 +18,7 @@ import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
 DOCS = ROOT / "docs"
-VERSION = "0.5"
+PDF_BASENAME = "EviRecall_Project_Proposal"
 CITATIONS = {
     "smurfs": "smurfs2025",
     "tiermem": "tiermem2026",
@@ -260,7 +260,7 @@ def main() -> None:
 \pagestyle{fancy}
 \fancyhf{}
 \fancyhead[L]{\small\color{accent}EviRecall}
-\fancyhead[R]{\small\color{accent}Research Proposal}
+\fancyhead[R]{\small\color{accent}Project Proposal}
 \fancyfoot[C]{\small\thepage}
 \renewcommand{\headrulewidth}{0.3pt}
 \fancypagestyle{plain}{\fancyhf{}\fancyfoot[C]{\small\thepage}\renewcommand{\headrulewidth}{0pt}}
@@ -268,14 +268,14 @@ def main() -> None:
 \widowpenalty=10000
 \emergencystretch=3em
 \sloppy
-\hypersetup{pdftitle={EviRecall Proposal vVERSION},pdfauthor={EviRecall Team}}
+\hypersetup{pdftitle={EviRecall - Project Proposal},pdfauthor={EviRecall Team},pdfsubject={Natural Language Processing (CSC5051 / CSC6052 / MDS5110), Fall 2026}}
 \begin{document}
 \thispagestyle{plain}
 {\color{accent}\LARGE\bfseries EviRecall}\par
 {\large\bfseries Evidence-Aware Memory for Long-Horizon Multi-Agent Tasks}\par
 \vspace{4pt}\hrule\vspace{7pt}
 """
-    source = preamble.replace("vVERSION", "v" + VERSION) + render_body() + "\n" + bibliography() + "\n\\end{document}\n"
+    source = preamble + render_body() + "\n" + bibliography() + "\n\\end{document}\n"
     tex_path = DOCS / "proposal.tex"
     tex_path.write_text(source, encoding="utf-8")
     print(f"Generated {tex_path.relative_to(ROOT)}")
@@ -290,14 +290,14 @@ def main() -> None:
         if "miktex" in version.stdout.lower():
             command.append("--disable-installer")
         command += ["-interaction=nonstopmode", "-halt-on-error",
-                    f"-output-directory={output_dir}", f"-jobname=evirecall-proposal-v{VERSION}", str(tex_path)]
+                    f"-output-directory={output_dir}", f"-jobname={PDF_BASENAME}", str(tex_path)]
         for _ in range(2):
             result = subprocess.run(command, cwd=DOCS, capture_output=True, encoding="utf-8", errors="replace")
             if result.returncode:
                 print(result.stdout[-6000:])
                 print(result.stderr[-2000:])
                 raise SystemExit(result.returncode)
-        print(f"Built {(output_dir / f'evirecall-proposal-v{VERSION}.pdf').relative_to(ROOT)}")
+        print(f"Built {(output_dir / (PDF_BASENAME + '.pdf')).relative_to(ROOT)}")
 
 
 if __name__ == "__main__":

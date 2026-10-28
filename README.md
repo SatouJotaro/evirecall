@@ -2,11 +2,11 @@
 
 **Evidence-aware memory for long-horizon multi-agent tasks.** A three-person NLP course project investigating evidence reuse, stale-memory propagation, and recovery under limited resources.
 
-**Stage: proposal and source review.** Smurfs is the selected backbone; Jev TierMem is the first memory candidate. The intervention, experiment scale, and action environment remain subject to a feasibility pilot. This repository does not yet contain a working EviRecall agent or measured improvements.
+**Stage: proposal finalized; implementation pending.** Smurfs is the selected backbone; Jev TierMem is the first memory candidate. The intervention, experiment scale, and action environment remain subject to a feasibility pilot. This repository does not yet contain a working EviRecall agent or measured improvements.
 
 ## Start here
 
-- **[English proposal](docs/proposal.md)** — research motivation, selection trade-offs, proposed method, experiments, and named work packages. [PDF](output/pdf/evirecall-proposal-v0.5.pdf) · [LaTeX](docs/proposal.tex).
+- **[English proposal](docs/proposal.md)** — research motivation, selection trade-offs, proposed method, experiments, and named work packages. [Submission PDF](output/pdf/EviRecall_Project_Proposal.pdf) · [LaTeX](docs/proposal.tex).
 - **[Execution plan](docs/plan.md)** — ownership, shared interfaces, milestones, report assembly, and verified course requirements.
 
 The [reference index](docs/references.md) and [BibTeX](docs/references.bib) support these two documents. Earlier Chinese documents are historical material in [archive](archive/README.md).
@@ -33,4 +33,4 @@ python scripts/build_proposal.py --pdf
 
 The proposal uses connected prose to explain the alternatives and trade-offs, with tables for the team roster and responsibilities. The roster is populated in the Markdown source; its personal details and email links render in blue. Use blank lines for separate paragraphs. The generator also supports standalone headings, `<br>` within table cells, and explicit page breaks.
 
-The generated proposal is a working document. Apply the course's confirmed submission template before submission. Course: [CSC5051 / CSC6052 / MDS5110, Fall 2026](https://nlp-course-cuhksz.github.io/).
+The proposal is finalized for submission to [Natural Language Processing (CSC5051 / CSC6052 / MDS5110), Fall 2026](https://nlp-course-cuhksz.github.io/). The generated PDF uses a stable filename without a draft version number.
