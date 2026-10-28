@@ -1,0 +1,3 @@
+{"task_id":"ordinary-recall","expected_status":"completed","expected_prediction":"The travel budget is CNY 3000.","expected_source_ids":["recall-001"]}
+{"task_id":"explicit-update","expected_status":"completed","expected_prediction":"The travel budget is now CNY 2500.","expected_source_ids":["update-001","update-002"]}
+{"task_id":"insufficient-evidence","expected_status":"abstained","expected_prediction":null,"expected_source_ids":[]}

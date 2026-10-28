@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-10-28",
+  "sources": [
+    {"id":"smurfs","url":"https://github.com/FreedomIntelligence/Smurfs.git","commit":"0f5c44701f6c9e5ac9caed9edc4ce16ad9c430c3"},
+    {"id":"tiermem","url":"https://github.com/FreedomIntelligence/Tiermem.git","commit":"d0d3896e917117ba0fcc1501e2b2dae891d2a2e3"},
+    {"id":"longmemeval","url":"https://github.com/xiaowu0162/LongMemEval.git","commit":"9e0b455f4ef0e2ab8f2e582289761153549043fc"},
+    {"id":"stale","url":"https://github.com/icedreamc/STALE.git","commit":"ea7d391103a151927cd29d2f01d87597a782bdcb"},
+    {"id":"memoryarena","url":"https://github.com/ZexueHe/MemoryArena.git","commit":"6cd9de14b71915e39ac742a20dc33785e14b6aab"},
+    {"id":"mast","url":"https://github.com/multi-agent-systems-failure-taxonomy/MAST.git","commit":"a70542e541b2104ef8fcd785778179e173fb8d70"}
+  ]
+}

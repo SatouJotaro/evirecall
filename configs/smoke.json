@@ -1,0 +1,8 @@
+{
+  "mode": "smoke",
+  "backend": "fixture",
+  "condition": "fixture-wiring",
+  "tasks": "../fixtures/public/tasks.jsonl",
+  "expectations": "../fixtures/evaluator/expectations.jsonl",
+  "budget": {"max_items": 2, "max_characters": 2000}
+}

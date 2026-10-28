@@ -17,3 +17,9 @@ runs/
 *.bbl
 *.blg
 *.synctex.gz
+vendor/
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.coverage
