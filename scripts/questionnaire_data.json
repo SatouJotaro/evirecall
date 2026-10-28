@@ -1,0 +1,145 @@
+{
+  "id": "evirecall-team-decisions",
+  "version": 1,
+  "date": "2026-10-28",
+  "members": [
+    {"id": "xiaochen", "name": "Xiaochen Bai", "role": "Memory 与 Smurfs 集成"},
+    {"id": "bijun", "name": "Bijun Zeng", "role": "证据、错误传播与恢复"},
+    {"id": "chengyu", "name": "Chengyu Tang", "role": "统一评测与资源 benchmark"}
+  ],
+  "sections": [
+    {
+      "id": "scope", "title": "第一版做什么", "subtitle": "先统一要验证的机制，再检查依赖是否可用。", "owner": "Xiaochen 牵头，三人共同确认",
+      "questions": [
+        {
+          "id": "scope", "title": "第一版主要解决哪一种记忆更新？", "context": "例如用户把预算从 5000 元改为 3000 元，旧行程仍可能被其他 Agent 引用。我们需要一个能实现、能观察，也能公平对照的干预。", "recommendation": "先实现明确更新下的证据回查，使用更新／不更新配对案例检查是否误伤仍然有效的记忆。",
+          "options": [
+            {"id": "explicit", "title": "明确更新 → 标记旧结论 → 回查证据", "detail": "保留原始记录和来源关系，在角色交接时检查受影响的结论。范围较小，错误原因也更容易定位。", "recommended": true},
+            {"id": "implicit", "title": "同时处理明确更新与隐含矛盾", "detail": "覆盖更广，但需要额外的冲突检测与误报分析；第一版的实现和归因成本更高。"},
+            {"id": "retrieval", "title": "先只改进检索与摘要", "detail": "接入更快，但暂时无法回答“旧记忆如何传播和恢复”。若选择，应相应缩小研究主张。"}
+          ]
+        },
+        {
+          "id": "jev", "title": "Jev 依赖验证与失败后的退路怎么安排？", "context": "本地已有固定版本源码；真实判断服务的访问、调用成本和与 Smurfs 的连通性仍需试跑。源码可读不等于服务已经可用。", "recommendation": "先给 Jev 一个有明确截止点的小样本试跑；同时保持 memory 接口独立，避免其他两人的工作被阻塞。",
+          "options": [
+            {"id": "pilot-fallback", "title": "限时验证 Jev，并准备独立简化后端", "detail": "验证失败后讨论改用 BM25＋来源元数据等简化实现，明确重新命名，并记录未完成 Jev 对比的限制。", "recommended": true},
+            {"id": "must-jev", "title": "Jev 是必要条件，优先解决依赖", "detail": "与当前 proposal 更接近，但需要预留服务接入时间；仍应让任务和评测通过 fixture 并行开发。"},
+            {"id": "after-pilot", "title": "拿到试跑证据后再定退路", "detail": "先记录阻碍、可用接口和单次调用量，再共同决定；需填写试跑截止日期。"}
+          ]
+        }
+      ],
+      "fields": [
+        {"id": "dependency_date", "label": "Jev／Smurfs 首轮试跑截止日期", "type": "date"},
+        {"id": "first_demo", "label": "希望第一次演示看到什么", "type": "textarea", "placeholder": "例如：预算更新后，trace 能显示旧结论被标记、原始证据被回查，以及最终决定是否修正。"}
+      ]
+    },
+    {
+      "id": "resources", "title": "模型与费用", "subtitle": "先登记可用资源与支出边界，模型和规模用试跑结果定。", "owner": "Chengyu 汇总用量，三人共同确定预算",
+      "questions": [
+        {
+          "id": "model", "title": "开发和主实验如何统一模型？", "context": "主比较需要固定任务／回答模型。Jev 的判断服务和评分模型单独记录，避免把更强模型带来的变化当成 memory 的效果。", "recommendation": "优先使用三人都能复现的同一 API 配置；先测工具调用、上下文限制、用量和失败情况，再冻结具体版本。",
+          "options": [
+            {"id": "shared-api", "title": "统一 API 配置与主模型", "detail": "各自保管凭据，使用同一模型版本、参数和运行配置。方便对照实验，额度与费用需一起安排。", "recommended": true},
+            {"id": "local", "title": "统一自部署模型", "detail": "适合已有稳定机器与维护者的情况；先验证推理服务，再评估是否值得承担运维工作。"},
+            {"id": "dev-flexible", "title": "开发模型可不同，主实验前统一", "detail": "能利用已有资源，但开发结果不能直接横向比较，正式配置仍要重跑和冻结。"}
+          ]
+        },
+        {
+          "id": "cost", "title": "如何控制试跑和正式实验费用？", "context": "需要计入角色调用、摘要、检索判断、重试和评测。当前离线 fixture 没有真实模型成本，不能用它估算正式费用。", "recommendation": "先设小额试跑上限，用真实调用记录估算完整实验，再共同确认总预算和分摊方式。下面的金额由你们填写，不是价格预测。",
+          "options": [
+            {"id": "pilot-cap", "title": "试跑封顶，测量后确定正式规模", "detail": "保留整体支出上限；达到试跑限额时暂停扩量，先检查调用次数与失败成本。", "recommended": true},
+            {"id": "fixed-cap", "title": "先定总预算，在预算内调整实验", "detail": "适合已有明确额度的情况；优先保证核心对比，再决定重复次数和扩展任务。"},
+            {"id": "separate", "title": "成员各自承担，但统一记账与总上限", "detail": "支付较灵活，仍需统一币种、记录用量，并确认不同账号的限流差异。"}
+          ]
+        }
+      ],
+      "fields": [
+        {"id": "provider", "label": "可用服务商／模型候选", "type": "text", "placeholder": "填写名称、版本和已验证情况；不要填写 API key。"},
+        {"id": "currency", "label": "预算币种", "type": "select", "options": ["CNY", "USD", "HKD"]},
+        {"id": "pilot_budget", "label": "试跑预算上限", "type": "number", "placeholder": "待小组填写", "min": 0},
+        {"id": "total_budget", "label": "项目总预算上限", "type": "number", "placeholder": "待小组填写", "min": 0},
+        {"id": "payment", "label": "额度管理、分摊与超支处理", "type": "textarea", "placeholder": "谁汇总账单？如何分摊？达到什么条件暂停？"}
+      ]
+    },
+    {
+      "id": "criteria", "title": "怎样判断错误", "subtitle": "把同一条执行轨迹放在一起看，比只讨论指标名称更容易达成一致。", "owner": "Bijun 起草规则，另外两人共同核对",
+      "scenario": "讨论案例：预算已经下调，Planner 仍沿用旧预算，Executor 又据此生成方案；Verifier 发现问题后要求重做，最终方案满足新预算且完成任务。这个案例可以同时出现“错误传播”和“最终恢复成功”。",
+      "questions": [
+        {
+          "id": "errors", "title": "如何记录旧记忆使用和跨角色错误传播？", "context": "引用过旧记录，不一定代表决策依赖它；一个来源 ID 存在，也不意味着它支持当前决定。需要区分检索、使用和传播。", "recommendation": "分别记录更新后的旧证据依赖决策、跨角色复用，以及最终结果。预先约定哪些决策有资格进入分母。",
+          "options": [
+            {"id": "stage-and-final", "title": "阶段级错误与最终成败分别记录", "detail": "通过带来源的 trace 识别谁使用了什么证据，既保留中途错误，也保留后续纠正。标注成本较高但更贴近题目。", "recommended": true},
+            {"id": "final-only", "title": "第一轮只看最终任务成败", "detail": "实现简单，适合接通流程；仅凭这个指标不能说明跨角色错误传播，应补充案例分析。"},
+            {"id": "rubric-first", "title": "先共同标注 10 条 trace，再冻结规则", "detail": "在看过真实例子后明确边界；标注样本来自开发集，正式测试前确定判定标准与分母。"}
+          ]
+        },
+        {
+          "id": "recovery", "title": "什么情况算恢复成功？", "context": "“发现旧记忆”“修正约束”和“完成正确任务”是不同阶段。统一定义后，程序评分和人工分析才可比较。", "recommendation": "把纠正后的任务成功作为严格恢复标准，同时单独记录发现错误、修正证据和部分恢复。",
+          "options": [
+            {"id": "correct-and-complete", "title": "纠正旧证据影响，并成功完成任务", "detail": "标准清楚；若只是识别问题或修正约束但没有完成任务，另记为部分恢复。", "recommended": true},
+            {"id": "correct-state", "title": "修正状态即可，任务完成另算", "detail": "更关注 memory 的直接作用；需把“状态恢复率”和“任务成功率”分开命名和报告。"},
+            {"id": "per-task", "title": "先按任务类型制定具体规则", "detail": "QA 与行动任务分别定义成功条件，并明确二者不能混合计算一个恢复率。"}
+          ]
+        }
+      ],
+      "fields": [
+        {"id": "scenario_label", "label": "你会如何标注上面的预算案例", "type": "textarea", "placeholder": "例如：Planner 旧证据使用；Executor 跨角色传播；Verifier 纠正；最终恢复成功。写出有争议的地方。"},
+        {"id": "reviewers", "label": "人工标注与复核安排", "type": "text", "placeholder": "谁做双人独立标注？计划先核对多少条开发 trace？"}
+      ]
+    },
+    {
+      "id": "evaluation", "title": "实验怎么一起跑", "subtitle": "控制比较条件、冻结测试数据，并保留失败与不确定结果。", "owner": "三人共同定口径，Chengyu 落实到配置",
+      "questions": [
+        {
+          "id": "baselines", "title": "哪些 memory 对照是核心结果的必要条件？", "context": "现有 proposal 计划 recent history、BM25、原始 Jev、Jev＋干预；CUP-Mem 是 STALE 上优先尝试的相近方法。最终比较须取决于接入证据与预算。", "recommendation": "保留简单基线、未改动后端和改进版本，帮助区分检索收益与新机制收益；CUP-Mem 先做可行性检查。",
+          "options": [
+            {"id": "four", "title": "四组核心对照，CUP-Mem 试跑后定", "detail": "解释力较完整，但需要四个统一接口的配置。若 Jev 不可用，需明确替代后端并修改比较名称。", "recommended": true},
+            {"id": "minimum-first", "title": "先做 BM25、后端原版、改进版三组", "detail": "缩短首轮实验；正式结果前评估是否补 recent history，并说明减少对照带来的限制。"},
+            {"id": "pair-only", "title": "先跑原版与改进版，再补简单基线", "detail": "适合验证链路和干预是否生效；只有成对试跑不足以支持完整的最终比较。"}
+          ]
+        },
+        {
+          "id": "datasets", "title": "数据与实验规模如何推进？", "context": "LongMemEval 与 STALE 是两套评测资源，各自需要开发／测试划分。按完整历史、场景或任务组分割，并检查共享来源。MemoryArena 行动环境仍需试跑。", "recommendation": "沿用 proposal 的小样本起点：每套主要数据 10 个开发单元、3 个 travel 组；这些是试跑目标，最终规模由成本和环境可用性决定。",
+          "options": [
+            {"id": "two-plus-pilot", "title": "两套 memory 评测＋小规模行动试跑", "detail": "检查 travel 可用性后，再评估 100 个 LongMemEval 问题、100 个 STALE 场景和 20 个行动组的暂定目标。", "recommended": true},
+            {"id": "qa-first", "title": "先完成两套 memory 评测，行动任务后补", "detail": "主结果更容易形成；在没有行动实验前，不宣称已验证端到端长程任务能力。"},
+            {"id": "travel-first", "title": "先验证行动链路，再扩 memory 评测", "detail": "更早发现环境和工具问题，但若接入受阻，会延后第一批定量结果。"}
+          ]
+        },
+        {
+          "id": "resources", "title": "资源 benchmark 的范围限定在哪里？", "context": "当前方案研究证据预算和 API 任务并发。API 延迟、吞吐和限流结果不能直接解释为 GPU 调度效果。", "recommendation": "在固定子集上分别改变证据预算与并发 1／2／4，保持工具和重试策略一致，并统计排队、失败与重试成本。",
+          "options": [
+            {"id": "two-axes", "title": "证据预算和 API 并发两条轴分别跑", "detail": "与当前 proposal 一致，工作量可控；暂不展开完整交叉矩阵和底层 GPU 调度。", "recommended": true},
+            {"id": "budget-only", "title": "先只做证据预算与质量／成本关系", "detail": "可以先形成清晰曲线；并发研究作为后续扩展，需同步缩小系统实验主张。"},
+            {"id": "serving", "title": "加入自部署推理或调度实验", "detail": "仅在已有机器、服务和维护者时考虑；必须明确额外工作由谁承担，避免挤占核心研究。"}
+          ]
+        }
+      ],
+      "fields": [
+        {"id": "freeze_date", "label": "正式测试数据与评分规则冻结日期", "type": "date"},
+        {"id": "experiment_constraints", "label": "实验规模、数据访问或评测方面的限制", "type": "textarea", "placeholder": "例如：可用额度、下载限制、哪些 baseline 需要先验证；不要把未试跑的数量写成已承诺结果。"}
+      ]
+    },
+    {
+      "id": "collaboration", "title": "第一次一起验收", "subtitle": "每个人都有独立交付物，也为共同结果负责。", "owner": "三人共同确认时间与协作方式",
+      "scenario": "首次联调的目标：一个真实任务完整经过输入、Smurfs、memory、trace 和评分。Xiaochen 验证 Agent／Jev；Bijun 验证任务输入、标签边界及 travel 环境；Chengyu 记录调用量、耗时和失败，估算后续实验规模。",
+      "questions": [
+        {
+          "id": "collaboration", "title": "用什么节奏集成代码、实验和报告？", "context": "三人分别负责实现、实验和文字；公共 runner 支持大家执行实验，benchmark 负责人不代写另外两人的模块或包办所有实验。", "recommendation": "小分支、小 PR，每周至少联调一次。报告按同一研究问题组织，由一位编辑统一术语、设置与结论。",
+          "options": [
+            {"id": "weekly", "title": "每周联调，个人实验负责制，轮流整合报告", "detail": "公共接口改动需另外两人核对；尽早用小任务暴露不兼容，最后各写对应方法和结果。", "recommended": true},
+            {"id": "two-checkpoints", "title": "固定两次中期联调，其余独立推进", "detail": "会议较少，但需要更严格的接口与样例；预留足够时间处理最后的集成问题。"},
+            {"id": "fixed-integrator", "title": "每周联调，指定固定集成与报告编辑", "detail": "整合风格一致；需相应减少该成员其他任务，避免公共工作集中到一个人。"}
+          ]
+        }
+      ],
+      "fields": [
+        {"id": "hours", "label": "你每周预计可投入小时数", "type": "number", "min": 0, "max": 168, "placeholder": "例如 6"},
+        {"id": "first_integration", "label": "建议首次真实任务联调日期", "type": "date"},
+        {"id": "meeting_time", "label": "可参加讨论／联调的时段", "type": "text", "placeholder": "写清日期或星期、时间与时区。"},
+        {"id": "editor", "label": "报告编辑与公共维护的分担建议", "type": "text", "placeholder": "谁负责第一次整合？如何轮换或平衡工作量？"},
+        {"id": "blockers", "label": "你现在最需要其他成员提供什么", "type": "textarea", "placeholder": "例如输入样例、固定 trace、adapter 返回结构、API 额度；也可写时间或技术上的顾虑。"}
+      ]
+    }
+  ]
+}
