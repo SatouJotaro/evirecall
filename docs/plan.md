@@ -2,8 +2,6 @@
 
 Proposal finalized for submission on 28 October 2026. Research design: [English proposal](proposal.md). Upstream links and selection notes: [references](references.md). The shared contracts and offline fixture path are implemented; live adapters and scientific experiments remain work for their owners.
 
-Use the [offline discussion questionnaire](discussion.html) to collect individual preferences and compare proposed solutions before the first integration meeting. Export/import answer files to share responses; the form does not submit decisions or change this plan automatically.
-
 ## Scope to freeze after the pilot
 
 - Fixed: Smurfs as the agent backbone; evidence-aware memory as the research focus; one shared experimental protocol.

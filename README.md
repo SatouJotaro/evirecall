@@ -43,7 +43,6 @@ The script creates independent checkouts in ignored `vendor/`, verifies commits 
 
 - **[English proposal](docs/proposal.md)** — research motivation, selection trade-offs, proposed method, experiments, and named work packages. [Submission PDF](output/pdf/EviRecall_Project_Proposal.pdf) · [LaTeX](docs/proposal.tex).
 - **[Execution plan](docs/plan.md)** — ownership, shared interfaces, milestones, report assembly, and verified course requirements.
-- **[Team discussion questionnaire](docs/discussion.html)** — Chinese offline form covering scope, resources, error definitions, experiments, and collaboration. Download the HTML and open it in a browser; each member can save a separate draft, export JSON/Markdown, and import the three JSON answers for comparison. Choices start blank and do not modify the agreed plan automatically.
 
 The [reference index](docs/references.md) and [BibTeX](docs/references.bib) support these two documents. Earlier Chinese documents are historical material in [archive](archive/README.md).
 
@@ -74,5 +73,3 @@ python scripts/build_proposal.py --pdf
 The proposal uses connected prose to explain the alternatives and trade-offs, with tables for the team roster and responsibilities. The roster is populated in the Markdown source; its personal details and email links render in blue. Use blank lines for separate paragraphs. The generator also supports standalone headings, `<br>` within table cells, and explicit page breaks.
 
 The proposal is finalized for submission to [Natural Language Processing (CSC5051 / CSC6052 / MDS5110), Fall 2026](https://nlp-course-cuhksz.github.io/). The generated PDF uses a stable filename without a draft version number.
-
-The questionnaire is a single self-contained HTML file with no external dependencies or online submission. Its content lives in `scripts/questionnaire_data.json`, its layout and interactions in `scripts/questionnaire.template.html`; regenerate with `python scripts/build_questionnaire.py`. Drafts are stored in the current browser when local storage is available. Export JSON before moving the file or changing browsers. Imported comparisons are discussion aids; record agreed decisions in `docs/plan.md` after the meeting.
