@@ -138,7 +138,7 @@ def bibliography() -> str:
 def render_table(rows: list[str]) -> str:
     cells = [[cell.strip() for cell in row.strip().strip("|").split("|")] for row in rows]
     header, separator, *body = cells
-    is_team_table = header == ["Member", "Name / school", "Student ID", "University email"]
+    is_team_table = header == ["Member", "Name", "Student ID", "University email"]
     count = len(header)
     if not all(re.fullmatch(r":?-+:?", cell) for cell in separator):
         raise ValueError("Invalid Markdown table separator")

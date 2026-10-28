@@ -6,10 +6,10 @@
 
 **Project repository:** [github.com/SatouJotaro/evirecall](https://github.com/SatouJotaro/evirecall)
 
-| Member | Name / school | Student ID | University email |
+| Member | Name | Student ID | University email |
 | --- | --- | --- | --- |
-| A | Bijun Zeng (SME) | 226020337 | [bijunzeng@link.cuhk.edu.cn](mailto:bijunzeng@link.cuhk.edu.cn) |
-| B | Chengyu Tang (SSE) | 226010320 | [chengyutang@link.cuhk.edu.cn](mailto:chengyutang@link.cuhk.edu.cn) |
+| A | Bijun Zeng | 226020337 | [bijunzeng@link.cuhk.edu.cn](mailto:bijunzeng@link.cuhk.edu.cn) |
+| B | Chengyu Tang | 226010320 | [chengyutang@link.cuhk.edu.cn](mailto:chengyutang@link.cuhk.edu.cn) |
 | C | Xiaochen Bai | 225040170 | [xiaochenbai@link.cuhk.edu.cn](mailto:xiaochenbai@link.cuhk.edu.cn) |
 
 ## 1. Introduction
