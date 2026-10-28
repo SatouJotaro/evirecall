@@ -5,3 +5,5 @@
 The former root README is preserved at `proposal-v0.1/README.md`. Follow the main repository README for current entry points.
 
 `proposal-v0.2/output/pdf/` retains the earlier three-page English PDF. Its sources remain in Git commit `3e533e8`. Version 0.3 expands the selection rationale, adds direct code/data links and blue personal-detail fields, and uses a more spacious layout.
+
+`proposal-v0.3/output/pdf/` retains the six-page English PDF; its sources remain in Git commit `3133834`. Version 0.4 adds implementation choices beyond agents/memory/data and separates headings, paragraphs, and table-cell decisions explicitly. The current seven-page PDF is linked from the repository README.

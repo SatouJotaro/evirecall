@@ -1,6 +1,6 @@
 # References and selection notes
 
-Primary sources supporting proposal v0.3, 27 October 2026. Bibliographic metadata: [BibTeX](references.bib). Local source snapshots live in `project/library/`, outside this repository; their manifest records full commits and PDF hashes. Inclusion here does not make a resource a required experiment.
+Primary sources supporting proposal v0.4, 28 October 2026. Bibliographic metadata: [BibTeX](references.bib). Local source snapshots live in `project/library/`, outside this repository; their manifest records full commits and PDF hashes. Inclusion here does not make a resource a required experiment.
 
 <a id="smurfs"></a>
 ## 1. Smurfs: Multi-Agent System using Context-Efficient DFSDT for Tool Planning

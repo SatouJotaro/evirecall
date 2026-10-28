@@ -1,6 +1,6 @@
 # EviRecall execution plan
 
-Working agreement, 27 October 2026. Research design: [English proposal](proposal.md). Upstream links and selection notes: [references](references.md). This is a plan for the three members to implement; interfaces below are proposed contracts, not existing APIs.
+Working agreement, updated 28 October 2026. Research design: [English proposal](proposal.md). Upstream links and selection notes: [references](references.md). This is a plan for the three members to implement; interfaces below are proposed contracts, not existing APIs.
 
 ## Scope to freeze after the pilot
 
@@ -8,6 +8,18 @@ Working agreement, 27 October 2026. Research design: [English proposal](proposal
 - Proposed: Jev as the first memory backend; LongMemEval_S and STALE as primary memory evaluations; a small MemoryArena travel study for downstream actions.
 - Week-1 decisions: actual providers and costs; Jev access; CUP-Mem feasibility; task-environment availability; development/test grouping; one intervention and one model configuration.
 - Optional extensions: learned routing, implicit-conflict detection, another framework, GPU-serving experiments. None is a prerequisite for the main comparison.
+
+## Implementation choices and pending decisions
+
+The proposal compares agents, memory methods, and evaluation resources, then records five implementation choices. These are design decisions, not measured wins over the alternatives.
+
+- **Model/provider:** start with a configurable API client and a fixed task/answer model across conditions. Select the exact provider, model/version, and spending cap after pilot access, tool-call, context, and cost checks. Record Jev's separate judgment service and evaluation models.
+- **Integration:** use a direct Python adapter initially. MCP/HTTP service boundaries remain optional; Smurfs generates answers and receives evidence in its verifier. Jev write-back is explicit.
+- **Storage/retrieval:** reuse Jev's SQLite/FTS5 raw store and file-based summaries, with adapter-owned update/validity metadata. Serialize writes within groups and isolate conditions. Adding a vector database or shared service is outside the minimum scope.
+- **Tool environment:** pilot one MemoryArena travel adapter, including database access and a complete multi-session trace. If unavailable, retain controlled cross-role tests and narrow action claims.
+- **Evaluation/execution:** use official score wrappers, evidence/recovery annotations, and human checks. C owns a Python runner with versioned configurations, JSONL traces, and CSV summaries. Freeze judges and sampling rules; parallelize independent groups. External tracking services and GPU scheduling are optional.
+
+The week-1 freeze must resolve model/provider access, Jev access, CUP-Mem feasibility, action environment, dataset IDs, budget limits, and scoring configuration. Each member retains freedom over internal implementation within the shared interfaces.
 
 ## Three owners, with comparable deliverables
 
@@ -82,3 +94,5 @@ This English proposal is a working research document, not a claim to use an appr
 ## Decision history
 
 The team moved from a broad multi-agent reliability topic to memory, evidence/error recovery, and resource evaluation. Smurfs became the selected backbone; Jev became the first integration candidate. Version 0.2 adds STALE/CUP-Mem to the closest-work comparison, makes two memory evaluations explicit, limits the action study to a pilot, and changes responsibilities to memory / evidence-and-errors / benchmark. Earlier discussion and the superseded Chinese proposal are preserved under `archive/proposal-v0.1/`.
+
+Version 0.4 records the model/provider, integration boundary, storage/retrieval, tool environment, and evaluation/execution choices alongside the research comparisons. It distinguishes selected directions from pilot-dependent configuration and uses explicit paragraph, heading, and table-cell breaks.

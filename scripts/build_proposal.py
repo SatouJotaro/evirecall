@@ -2,7 +2,8 @@
 
 Uses Python's standard library and an existing XeLaTeX installation. The small
 Markdown subset is intentional: headings, paragraphs, flat lists, links, bold,
-tables, inline code, {{personal-detail placeholders}}, and pagebreak comments.
+tables, explicit <br> breaks, inline code, {{personal-detail placeholders}},
+and pagebreak comments. Level-four headings are standalone unnumbered labels.
 Bibliography metadata comes from docs/references.bib.
 """
 
@@ -17,7 +18,7 @@ import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
 DOCS = ROOT / "docs"
-VERSION = "0.3"
+VERSION = "0.4"
 CITATIONS = {
     "smurfs": "smurfs2025",
     "tiermem": "tiermem2026",
@@ -49,6 +50,8 @@ def escape(value: str) -> str:
 
 
 def inline(value: str) -> str:
+    if "<br>" in value:
+        return r"\newline{}".join(inline(part.strip()) for part in value.split("<br>"))
     pattern = re.compile(r"\*\*(.+?)\*\*|`([^`]+)`|\[([^\]]+)\]\(([^)]+)\)|\{\{([^{}]+)\}\}")
     parts, start = [], 0
     for match in pattern.finditer(value):
@@ -144,7 +147,7 @@ def render_table(rows: list[str]) -> str:
     columns = "".join(r">{\raggedright\arraybackslash}p{\dimexpr " + str(width)
                       + r"\linewidth-2\tabcolsep\relax}" for width in widths)
     head = " & ".join(r"\textcolor{accent}{\textbf{" + inline(cell) + "}}" for cell in header) + r" \\"
-    output = [r"\begingroup", r"\fontsize{9.7}{11.8}\selectfont",
+    output = [r"\par\begingroup", r"\fontsize{10}{12.2}\selectfont",
               r"\setlength{\tabcolsep}{6pt}", r"\renewcommand{\arraystretch}{1.18}",
               r"\setlength{\LTpre}{5pt}", r"\setlength{\LTpost}{7pt}",
               r"\begin{longtable}{" + columns + "}", r"\hline\noalign{\vskip 5pt}", head,
@@ -153,8 +156,10 @@ def render_table(rows: list[str]) -> str:
               r"\noalign{\vskip 4pt}\hline\noalign{\vskip 5pt}", r"\endhead",
               r"\hline", r"\endfoot"]
     for row in body:
-        output.append(" & ".join(inline(cell) for cell in row) + r" \\[5pt]")
-    output += [r"\end{longtable}", r"\endgroup"]
+        output.append(" & ".join(inline(cell) for cell in row) + r" \\")
+        # A noalign gap remains visible even when a cell wraps to several lines.
+        output.append(r"\noalign{\vskip 7pt}")
+    output += [r"\end{longtable}", r"\endgroup\par"]
     return "\n".join(output)
 
 
@@ -166,7 +171,7 @@ def render_body() -> str:
         if paragraph:
             text = " ".join(paragraph)
             rendered = inline(text)
-            output.append(rendered + "\n")
+            output.append(rendered + r"\par" + "\n")
             paragraph.clear()
 
     source_lines = (DOCS / "proposal.md").read_text(encoding="utf-8").splitlines()
@@ -198,6 +203,9 @@ def render_body() -> str:
             output.append(r"\clearpage")
         elif not line.strip():
             flush()
+        elif line.startswith("#### "):
+            flush()
+            output.append(r"\subsubsection*{" + inline(line[5:]) + "}")
         elif line.startswith("### "):
             flush()
             title = re.sub(r"^\d+\.\d+\s*", "", line[4:])
@@ -236,8 +244,10 @@ def main() -> None:
 \usepackage{titlesec}
 \titleformat{\section}{\large\bfseries\color{accent}}{\thesection}{0.6em}{}
 \titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{0.6em}{}
+\titleformat{\subsubsection}[block]{\normalsize\bfseries}{}{0pt}{}
 \titlespacing*{\section}{0pt}{13pt}{7pt}
 \titlespacing*{\subsection}{0pt}{10pt}{5pt}
+\titlespacing*{\subsubsection}{0pt}{9pt}{4pt}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{7pt}
 \linespread{1.08}
@@ -253,14 +263,14 @@ def main() -> None:
 \widowpenalty=10000
 \emergencystretch=3em
 \sloppy
-\hypersetup{pdftitle={EviRecall Proposal v0.3},pdfauthor={EviRecall Team}}
+\hypersetup{pdftitle={EviRecall Proposal vVERSION},pdfauthor={EviRecall Team}}
 \begin{document}
 \thispagestyle{plain}
 {\color{accent}\LARGE\bfseries EviRecall}\par
 {\large\bfseries Evidence-Aware Memory for Long-Horizon Multi-Agent Tasks}\par
 \vspace{4pt}\hrule\vspace{7pt}
 """
-    source = preamble + render_body() + "\n" + bibliography() + "\n\\end{document}\n"
+    source = preamble.replace("vVERSION", "v" + VERSION) + render_body() + "\n" + bibliography() + "\n\\end{document}\n"
     tex_path = DOCS / "proposal.tex"
     tex_path.write_text(source, encoding="utf-8")
     print(f"Generated {tex_path.relative_to(ROOT)}")
