@@ -23,19 +23,21 @@ The week-1 freeze must resolve model/provider access, Jev access, CUP-Mem feasib
 
 ## Three owners, with comparable deliverables
 
-### A — Memory method and Smurfs hooks
+The proposed owners follow the roster order in the proposal: Bijun Zeng (A), Chengyu Tang (B), and Xiaochen Bai (C).
+
+### A — Bijun Zeng: memory method and Smurfs hooks
 
 Own `memory/` and the small memory-related changes in the Smurfs adapter. Deliver four bounded pieces: recent-history/BM25/Jev adapters; read/write/verifier hooks; one explicit-update intervention; mechanism ablations and analysis. A owns baseline memory behavior, not the entire benchmark runner.
 
 Acceptance: returned evidence resolves to immutable records; a summary cannot gain authority solely from agent agreement; invalidation behavior can be inspected on fixtures; disabling each mechanism produces a documented ablation. Write the method and ablation sections, with one architecture figure and a quality/cost comparison.
 
-### B — Evidence, task environments, and error analysis
+### B — Chengyu Tang: evidence, task environments, and error analysis
 
 Own `scenarios/`, the travel-tool adapter, and `analysis/errors/`. Deliver four bounded pieces: the STALE input/label separation specification; paired update/no-update cases; a small action-task pilot; trace-level evidence and recovery analysis. Reuse the official STALE release and existing MemoryArena tools instead of authoring a new general benchmark.
 
 Acceptance: cases have source IDs, update points, expected valid constraints, and evaluator-only labels; a trace scorer runs on fixtures without A's module; two reviewers independently annotate a prespecified sample; disagreements and failures are retained. Write task/intervention design and qualitative/error results. Own the scientific meaning of an error, while C owns execution and aggregation.
 
-### C — Benchmark harness and resource experiments
+### C — Xiaochen Bai: benchmark harness and resource experiments
 
 Own `evaluation/`, `runner/`, and experiment configurations. Deliver four bounded pieces: memory-QA loading and official-score wrappers; a common runner with isolated stores; complete usage/latency/failure accounting; a small budget/concurrency study and reproducibility package. C calls A's agent/memory adapter and B's task adapter instead of implementing both.
 
@@ -89,10 +91,12 @@ Checked 27 October 2026 against the local **Lecture 1: Introduction**, PDF pages
 - Lecture 1 p.27 retains March/May dates and a one-page proposal suggestion; p.30 gives a tentative 1 November proposal date and says custom topics need approval. The current website lists proposal as optional for feedback. Submit this custom topic for instructor/TA feedback; do not interpret the older page as a final Fall deadline or confirmed current proposal-length rule.
 - The website's final-project slides link currently opens **Spring 2026** slides. Their 15%/40% split, four-minute presentation, May deadlines, BB submission details, and older template must not be silently imported into Fall requirements. Those sources are preserved in the local library for comparison.
 
-This English proposal is a working research document, not a claim to use an approved proposal template. Names/student IDs and the current submission instructions still need to be filled in before submission.
+This English proposal is a working research document, not a claim to use an approved proposal template. The team roster is populated. Confirm the current submission instructions and final responsibility allocation before submission.
 
 ## Decision history
 
 The team moved from a broad multi-agent reliability topic to memory, evidence/error recovery, and resource evaluation. Smurfs became the selected backbone; Jev became the first integration candidate. Version 0.2 adds STALE/CUP-Mem to the closest-work comparison, makes two memory evaluations explicit, limits the action study to a pilot, and changes responsibilities to memory / evidence-and-errors / benchmark. Earlier discussion and the superseded Chinese proposal are preserved under `archive/proposal-v0.1/`.
 
 Version 0.4 records the model/provider, integration boundary, storage/retrieval, tool environment, and evaluation/execution choices alongside the research comparisons. It distinguishes selected directions from pilot-dependent configuration and uses explicit paragraph, heading, and table-cell breaks.
+
+Version 0.5 presents the proposal as a connected research argument, expands the reasons and trade-offs behind the selections, and fills the roster with named proposed owners. The evaluation scope and implementation boundaries remain those defined above.

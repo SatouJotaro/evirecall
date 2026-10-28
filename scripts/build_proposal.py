@@ -18,7 +18,7 @@ import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
 DOCS = ROOT / "docs"
-VERSION = "0.4"
+VERSION = "0.5"
 CITATIONS = {
     "smurfs": "smurfs2025",
     "tiermem": "tiermem2026",
@@ -67,7 +67,7 @@ def inline(value: str) -> str:
             if target.startswith("references.md#"):
                 key = CITATIONS[target.split("#", 1)[1]]
                 parts.append(r"\cite{" + key + "}")
-            elif target.startswith("https://"):
+            elif target.startswith(("https://", "mailto:")):
                 parts.append(r"\href{" + target.replace("%", r"\%") + "}{" + escape(label) + "}")
             else:
                 parts.append(escape(label))
@@ -138,6 +138,7 @@ def bibliography() -> str:
 def render_table(rows: list[str]) -> str:
     cells = [[cell.strip() for cell in row.strip().strip("|").split("|")] for row in rows]
     header, separator, *body = cells
+    is_team_table = header == ["Member", "Name / school", "Student ID", "University email"]
     count = len(header)
     if not all(re.fullmatch(r":?-+:?", cell) for cell in separator):
         raise ValueError("Invalid Markdown table separator")
@@ -156,7 +157,11 @@ def render_table(rows: list[str]) -> str:
               r"\noalign{\vskip 4pt}\hline\noalign{\vskip 5pt}", r"\endhead",
               r"\hline", r"\endfoot"]
     for row in body:
-        output.append(" & ".join(inline(cell) for cell in row) + r" \\")
+        rendered = [inline(cell) for cell in row]
+        if is_team_table:
+            rendered = [cell if index == 0 else r"\textcolor{linkblue}{" + cell + "}"
+                        for index, cell in enumerate(rendered)]
+        output.append(" & ".join(rendered) + r" \\")
         # A noalign gap remains visible even when a cell wraps to several lines.
         output.append(r"\noalign{\vskip 7pt}")
     output += [r"\end{longtable}", r"\endgroup\par"]

@@ -6,7 +6,7 @@
 
 ## Start here
 
-- **[English proposal](docs/proposal.md)** — agents/memory/data comparisons, model and integration choices, planned work, experiments, and three work packages. [PDF](output/pdf/evirecall-proposal-v0.4.pdf) · [LaTeX](docs/proposal.tex).
+- **[English proposal](docs/proposal.md)** — research motivation, selection trade-offs, proposed method, experiments, and named work packages. [PDF](output/pdf/evirecall-proposal-v0.5.pdf) · [LaTeX](docs/proposal.tex).
 - **[Execution plan](docs/plan.md)** — ownership, shared interfaces, milestones, report assembly, and verified course requirements.
 
 The [reference index](docs/references.md) and [BibTeX](docs/references.bib) support these two documents. Earlier Chinese documents are historical material in [archive](archive/README.md).
@@ -31,6 +31,6 @@ Edit `docs/proposal.md` and `docs/references.bib`, then regenerate the editable 
 python scripts/build_proposal.py --pdf
 ```
 
-The PDF uses blue clickable source links and blue personal-detail placeholders. Edit the `{{...}}` fields in the Markdown source to fill in each member's name, student ID, and university email. Use blank lines for separate paragraphs, `####` for standalone labels, and `<br>` for intentional line breaks within table cells. These structures and explicit page breaks are preserved by the generator.
+The proposal uses connected prose to explain the alternatives and trade-offs, with tables for the team roster and responsibilities. The roster is populated in the Markdown source; its personal details and email links render in blue. Use blank lines for separate paragraphs. The generator also supports standalone headings, `<br>` within table cells, and explicit page breaks.
 
 The generated proposal is a working document. Apply the course's confirmed submission template before submission. Course: [CSC5051 / CSC6052 / MDS5110, Fall 2026](https://nlp-course-cuhksz.github.io/).

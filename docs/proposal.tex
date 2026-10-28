@@ -35,13 +35,13 @@
 \widowpenalty=10000
 \emergencystretch=3em
 \sloppy
-\hypersetup{pdftitle={EviRecall Proposal v0.4},pdfauthor={EviRecall Team}}
+\hypersetup{pdftitle={EviRecall Proposal v0.5},pdfauthor={EviRecall Team}}
 \begin{document}
 \thispagestyle{plain}
 {\color{accent}\LARGE\bfseries EviRecall}\par
 {\large\bfseries Evidence-Aware Memory for Long-Horizon Multi-Agent Tasks}\par
 \vspace{4pt}\hrule\vspace{7pt}
-\textbf{Research proposal v0.4 | 28 October 2026 | CSC5051 / CSC6052 / MDS5110}\par
+\textbf{Research proposal v0.5 | 28 October 2026 | CSC5051 / CSC6052 / MDS5110}\par
 
 \textbf{Project repository:} \href{https://github.com/SatouJotaro/evirecall}{github.com/SatouJotaro/evirecall}\par
 
@@ -53,221 +53,82 @@
 \setlength{\LTpost}{7pt}
 \begin{longtable}{>{\raggedright\arraybackslash}p{\dimexpr 0.12\linewidth-2\tabcolsep\relax}>{\raggedright\arraybackslash}p{\dimexpr 0.25\linewidth-2\tabcolsep\relax}>{\raggedright\arraybackslash}p{\dimexpr 0.25\linewidth-2\tabcolsep\relax}>{\raggedright\arraybackslash}p{\dimexpr 0.38\linewidth-2\tabcolsep\relax}}
 \hline\noalign{\vskip 5pt}
-\textcolor{accent}{\textbf{Member}} & \textcolor{accent}{\textbf{Full name}} & \textcolor{accent}{\textbf{Student ID}} & \textcolor{accent}{\textbf{University email}} \\
+\textcolor{accent}{\textbf{Member}} & \textcolor{accent}{\textbf{Name / school}} & \textcolor{accent}{\textbf{Student ID}} & \textcolor{accent}{\textbf{University email}} \\
 \noalign{\vskip 4pt}\hline\noalign{\vskip 5pt}
 \endfirsthead
 \hline\noalign{\vskip 5pt}
-\textcolor{accent}{\textbf{Member}} & \textcolor{accent}{\textbf{Full name}} & \textcolor{accent}{\textbf{Student ID}} & \textcolor{accent}{\textbf{University email}} \\
+\textcolor{accent}{\textbf{Member}} & \textcolor{accent}{\textbf{Name / school}} & \textcolor{accent}{\textbf{Student ID}} & \textcolor{accent}{\textbf{University email}} \\
 \noalign{\vskip 4pt}\hline\noalign{\vskip 5pt}
 \endhead
 \hline
 \endfoot
-A & \personal{Member A name} & \personal{Member A ID} & \personal{Member A email} \\
+A & \textcolor{linkblue}{Bijun Zeng (SME)} & \textcolor{linkblue}{226020337} & \textcolor{linkblue}{\href{mailto:bijunzeng@link.cuhk.edu.cn}{bijunzeng@link.cuhk.edu.cn}} \\
 \noalign{\vskip 7pt}
-B & \personal{Member B name} & \personal{Member B ID} & \personal{Member B email} \\
+B & \textcolor{linkblue}{Chengyu Tang (SSE)} & \textcolor{linkblue}{226010320} & \textcolor{linkblue}{\href{mailto:chengyutang@link.cuhk.edu.cn}{chengyutang@link.cuhk.edu.cn}} \\
 \noalign{\vskip 7pt}
-C & \personal{Member C name} & \personal{Member C ID} & \personal{Member C email} \\
+C & \textcolor{linkblue}{Xiaochen Bai} & \textcolor{linkblue}{225040170} & \textcolor{linkblue}{\href{mailto:xiaochenbai@link.cuhk.edu.cn}{xiaochenbai@link.cuhk.edu.cn}} \\
 \noalign{\vskip 7pt}
 \end{longtable}
 \endgroup\par
-Replace the blue personal-information placeholders before submission.\par
+\section{Introduction}
+A multi-agent system may retrieve the right information and still make the wrong decision if that information is no longer valid. Consider a travel-planning task in which the user reduces the budget after an initial itinerary has been saved. A planning agent may recall the old itinerary, an execution agent may act on it, and a verifier may accept the result because the agents agree. The difficulty is that the stored plan still has a valid source, while the constraint that justified it has changed. This example motivates our focus on the relationship between memory, evidence, and later actions.\par
 
-\subsubsection*{Project summary}
-We propose to extend Smurfs with evidence-aware shared memory and test whether checking recalled evidence prevents stale information from affecting later decisions. The project combines one memory intervention, controlled evidence/error experiments, and a reproducible benchmark harness. No performance improvements are claimed at this planning stage.\par
+EviRecall will investigate this problem by extending Smurfs with evidence-aware shared memory. We plan to connect its planning, execution, answering, and verification roles to a common memory interface, then study what happens when earlier conclusions encounter new evidence. The proposed intervention will track which observations support a summary, identify conclusions affected by an authoritative update, and retrieve the underlying records before those conclusions are reused. Its value will depend on whether this additional checking improves decisions enough to justify its cost.\par
 
-\section{Motivation and research questions}
-Planning, execution, answering, and verification roles share information. Compressed memory may omit a constraint or become outdated after new evidence arrives. Reusing that memory can propagate an error across roles and subsequent tasks.\par
-
-For example, after a user reduces a travel budget, later roles might reuse an old plan without checking the changed constraint. This is an illustrative scenario, not an experimental observation.\par
-
-\begin{itemize}
-\item \textbf{RQ1 - Memory utility:} Does tiered memory improve recall and subsequent task completion over recent history and ordinary retrieval?
-\item \textbf{RQ2 - Evidence and recovery:} Does checking evidence validity reduce stale-information reuse across roles and improve recovery after an update?
-\item \textbf{RQ3 - Resource trade-offs:} How do evidence budgets and task concurrency affect quality, cost, and completion time?
-\end{itemize}
-\subsubsection*{Current scope}
-\begin{itemize}
-\item \textbf{Backbone and memory:} fix Smurfs; pilot Jev TierMem as the first memory backend.
-\item \textbf{Evaluation:} LongMemEval and STALE, with a small MemoryArena action pilot and MAST-informed failure annotation.
-\item \textbf{Deliverables:} a memory adapter, source-linked traces, error analysis, and reproducible comparisons. No parameter training is required initially.
-\end{itemize}
-Sections 2-3 compare research alternatives; Section 5 adds five implementation choices.\par
+The study has three connected questions. First, does tiered memory improve recall and task completion compared with recent context and ordinary retrieval? Second, does checking evidence validity reduce the reuse of stale information across roles and help the system recover after an update? Third, how do these effects change as the evidence budget and number of concurrent tasks increase? We will examine these questions through existing memory evaluations, a small multi-session action study, and a common experiment runner. The initial scope involves no parameter training; it concentrates on memory behavior and its consequences within a fixed agent system.\par
 
 \clearpage
-\section{Multi-agent and memory selection}
-Selection favors task fit, inspectable interfaces, reproducibility, and three-person feasibility. Smurfs exposes evidence flow across roles; we hold it fixed and vary memory. The source review below does not imply reproduction of every candidate.\par
+\section{Related work and selection rationale}
+Our choices reflect the needs of this study: access to role-level decisions, a memory interface that can be modified independently, and evaluations that distinguish recall from action. The following comparisons are based on papers and source review. They establish a practical starting point for the project; implementation feasibility and experimental scale will be checked in an initial pilot.\par
 
-\subsection{Multi-agent systems}
-\par\begingroup
-\fontsize{10}{12.2}\selectfont
-\setlength{\tabcolsep}{6pt}
-\renewcommand{\arraystretch}{1.18}
-\setlength{\LTpre}{5pt}
-\setlength{\LTpost}{7pt}
-\begin{longtable}{>{\raggedright\arraybackslash}p{\dimexpr 0.22\linewidth-2\tabcolsep\relax}>{\raggedright\arraybackslash}p{\dimexpr 0.49\linewidth-2\tabcolsep\relax}>{\raggedright\arraybackslash}p{\dimexpr 0.29\linewidth-2\tabcolsep\relax}}
-\hline\noalign{\vskip 5pt}
-\textcolor{accent}{\textbf{Candidate and code}} & \textcolor{accent}{\textbf{Relevant capability and trade-off}} & \textcolor{accent}{\textbf{Decision}} \\
-\noalign{\vskip 4pt}\hline\noalign{\vskip 5pt}
-\endfirsthead
-\hline\noalign{\vskip 5pt}
-\textcolor{accent}{\textbf{Candidate and code}} & \textcolor{accent}{\textbf{Relevant capability and trade-off}} & \textcolor{accent}{\textbf{Decision}} \\
-\noalign{\vskip 4pt}\hline\noalign{\vskip 5pt}
-\endhead
-\hline
-\endfoot
-\href{https://github.com/FreedomIntelligence/Smurfs}{Smurfs} \cite{smurfs2025} & Inspectable planning/execution/verification; persistent memory must be added. & \textbf{Selected.}\newline{}Fits the evidence study. \\
-\noalign{\vskip 7pt}
-\href{https://github.com/langchain-ai/deepagents}{Deep Agents} / \href{https://github.com/langchain-ai/langgraph}{LangGraph} \cite{deepagents2026} & Subagents, file/context tools, persistence; requires another orchestration stack. & \textbf{Alternative.}\newline{}More stack changes. \\
-\noalign{\vskip 7pt}
-\href{https://github.com/microsoft/autogen}{Magentic-One} \cite{magentic2024} & Broad web/file/code roles; current AutoGen source is archived. & \textbf{Reference.}\newline{}Extra tool setup. \\
-\noalign{\vskip 7pt}
-\href{https://github.com/FreedomIntelligence/TwinMarket}{TwinMarket} \cite{twinmarket2025} & Financial/social simulation with domain-specific tasks and evaluation. & \textbf{Outside scope.}\newline{}Domain tasks. \\
-\noalign{\vskip 7pt}
-\href{https://github.com/FreedomIntelligence/EasyMED}{EasyMED} \cite{easymed2025} & Patient simulation with medical tasks and educational evaluation. & \textbf{Outside scope.}\newline{}Domain tasks. \\
-\noalign{\vskip 7pt}
-\end{longtable}
-\endgroup\par
-\subsection{Memory mechanisms}
-\par\begingroup
-\fontsize{10}{12.2}\selectfont
-\setlength{\tabcolsep}{6pt}
-\renewcommand{\arraystretch}{1.18}
-\setlength{\LTpre}{5pt}
-\setlength{\LTpost}{7pt}
-\begin{longtable}{>{\raggedright\arraybackslash}p{\dimexpr 0.22\linewidth-2\tabcolsep\relax}>{\raggedright\arraybackslash}p{\dimexpr 0.49\linewidth-2\tabcolsep\relax}>{\raggedright\arraybackslash}p{\dimexpr 0.29\linewidth-2\tabcolsep\relax}}
-\hline\noalign{\vskip 5pt}
-\textcolor{accent}{\textbf{Mechanism and source}} & \textcolor{accent}{\textbf{Relevant capability and trade-off}} & \textcolor{accent}{\textbf{Decision}} \\
-\noalign{\vskip 4pt}\hline\noalign{\vskip 5pt}
-\endfirsthead
-\hline\noalign{\vskip 5pt}
-\textcolor{accent}{\textbf{Mechanism and source}} & \textcolor{accent}{\textbf{Relevant capability and trade-off}} & \textcolor{accent}{\textbf{Decision}} \\
-\noalign{\vskip 4pt}\hline\noalign{\vskip 5pt}
-\endhead
-\hline
-\endfoot
-Recent history / BM25 & Limited context and raw-chunk retrieval; no explicit supersession tracking. & \textbf{Required controls.} \\
-\noalign{\vskip 7pt}
-\href{https://github.com/FreedomIntelligence/Tiermem/tree/d0d3896e917117ba0fcc1501e2b2dae891d2a2e3/jev_tiermem}{Jev TierMem} \cite{jev2026} & Summary/raw tiers, judgment service, Python interfaces; no router training. & \textbf{First backend.}\newline{}Pilot service access. \\
-\noalign{\vskip 7pt}
-\href{https://github.com/FreedomIntelligence/Tiermem}{TierMem paper implementation} \cite{tiermem2026} & Provenance-linked tiers and trained routing add training/service setup. & \textbf{Method reference.}\newline{}Not the Jev build. \\
-\noalign{\vskip 7pt}
-\href{https://github.com/icedreamc/STALE/tree/main/cup_mem}{CUP-Mem} \cite{stale2026} & State revision and propagation-aware updates overlap our intervention. & \textbf{Closest comparator.}\newline{}Pilot on STALE. \\
-\noalign{\vskip 7pt}
-\href{https://github.com/agiresearch/A-mem}{A-MEM} \cite{amem2025} / \href{https://github.com/mem0ai/mem0}{Mem0} \cite{mem02025} & Other designs for memory organization, links, and updates. & \textbf{Related methods.}\newline{}Optional comparisons. \\
-\noalign{\vskip 7pt}
-\href{https://github.com/caura-ai/caura}{Governed Memory / Caura} \cite{governed2026} & Supersession and shared provenance; code differs from the paper artifact. & \textbf{Systems reference.}\newline{}Service not required. \\
-\noalign{\vskip 7pt}
-\end{longtable}
-\endgroup\par
-\clearpage
-\section{Dataset and benchmark selection}
-Memory QA, action execution, and trace analysis require different evaluations. Long histories alone do not establish multi-agent collaboration or action success.\par
+\subsection{Choosing a multi-agent backbone}
+\href{https://github.com/FreedomIntelligence/Smurfs}{Smurfs} \cite{smurfs2025} provides an explicit tool-planning workflow with decomposition, execution, answering, verification, and recovery. These boundaries are useful because an error can be traced from the observation that entered the system to the role that later reused it. Smurfs also connects the project to the instructor's research. Its limitation is that persistent shared memory and a long-horizon task environment still require integration. We accept that work because keeping the backbone fixed gives us a clearer comparison of memory behavior, although it makes the first prototype less immediate than using a more complete application framework.\par
 
-\par\begingroup
-\fontsize{10}{12.2}\selectfont
-\setlength{\tabcolsep}{6pt}
-\renewcommand{\arraystretch}{1.18}
-\setlength{\LTpre}{5pt}
-\setlength{\LTpost}{7pt}
-\begin{longtable}{>{\raggedright\arraybackslash}p{\dimexpr 0.22\linewidth-2\tabcolsep\relax}>{\raggedright\arraybackslash}p{\dimexpr 0.49\linewidth-2\tabcolsep\relax}>{\raggedright\arraybackslash}p{\dimexpr 0.29\linewidth-2\tabcolsep\relax}}
-\hline\noalign{\vskip 5pt}
-\textcolor{accent}{\textbf{Resource and code}} & \textcolor{accent}{\textbf{What it evaluates; relevant limitation}} & \textcolor{accent}{\textbf{Use in EviRecall}} \\
-\noalign{\vskip 4pt}\hline\noalign{\vskip 5pt}
-\endfirsthead
-\hline\noalign{\vskip 5pt}
-\textcolor{accent}{\textbf{Resource and code}} & \textcolor{accent}{\textbf{What it evaluates; relevant limitation}} & \textcolor{accent}{\textbf{Use in EviRecall}} \\
-\noalign{\vskip 4pt}\hline\noalign{\vskip 5pt}
-\endhead
-\hline
-\endfoot
-\href{https://github.com/xiaowu0162/LongMemEval}{LongMemEval} \cite{longmemeval2025} & 500 memory-QA questions: extraction, cross-session reasoning, updates, time, abstention. & \textbf{Primary.}\newline{}Cleaned S; general QA. \\
-\noalign{\vskip 7pt}
-\href{https://github.com/icedreamc/STALE}{STALE} \cite{stale2026} & 400 scenarios, three queries each; state resolution, premise resistance, policy adaptation. & \textbf{Primary.}\newline{}Staleness / CUP-Mem. \\
-\noalign{\vskip 7pt}
-\href{https://github.com/ZexueHe/MemoryArena}{MemoryArena} \cite{memoryarena2026} & Multi-session actions; travel requires an extra database. Code is marked preview. & \textbf{Action pilot.}\newline{}Travel, if feasible. \\
-\noalign{\vskip 7pt}
-\href{https://github.com/multi-agent-systems-failure-taxonomy/MAST}{MAST / MAST-Data} \cite{mast2025} & 1,600+ annotated traces; 14 failure modes. Not replayable Smurfs tasks. & \textbf{Annotation reference.}\newline{}Not memory-training data. \\
-\noalign{\vskip 7pt}
-\href{https://github.com/HUST-AI-HYZ/MemoryAgentBench}{MemoryAgentBench} \cite{memoryagentbench2026} & Incremental memory/conflict tests; some sources overlap LongMemEval. & \textbf{Fallback.}\newline{}Memory QA only. \\
-\noalign{\vskip 7pt}
-\href{https://github.com/snap-research/locomo}{LoCoMo} \cite{locomo2024} & Long conversational memory; less direct coverage of our failure question. & \textbf{Optional.}\newline{}Conversation check. \\
-\noalign{\vskip 7pt}
-\end{longtable}
-\endgroup\par
-\subsubsection*{Dataset decision}
-Use two primary memory evaluations and one action pilot. These are not a training/test pair: no model parameters are trained. Reserve disjoint development groups for tuning. STALE uses LongMemEval-derived distractors; audit overlap and disclose dependence.\par
+\href{https://github.com/langchain-ai/deepagents}{Deep Agents} and \href{https://github.com/langchain-ai/langgraph}{LangGraph} \cite{deepagents2026} are credible engineering alternatives: subagents, file/context tools, and persistence could shorten the route to a working application. However, their built-in state and memory behavior would also need to be separated from our intervention. For a course study centered on evidence passing between roles, we favor the narrower Smurfs workflow. \href{https://github.com/microsoft/autogen}{Magentic-One} \cite{magentic2024} offers broader web, file, and code roles, but adds environment setup that our first experiment does not need; the reviewed AutoGen repository is also archived. \href{https://github.com/FreedomIntelligence/TwinMarket}{TwinMarket} \cite{twinmarket2025} and \href{https://github.com/FreedomIntelligence/EasyMED}{EasyMED} \cite{easymed2025} would introduce financial or medical evaluation questions. They remain useful examples of multi-agent design, while Smurfs keeps our task definition closer to the memory question.\par
 
-\section{What we will build}
-\subsubsection*{A. Memory integration and one intervention}
-Connect Smurfs to a replaceable adapter with immutable source IDs. For authoritative updates, check summary validity, flag dependent conclusions, and recover raw evidence within budget. Preserve old records and uncertainty. Study these existing ideas at role handoffs; test implicit conflicts without gold update labels.\par
+\subsection{Choosing the memory mechanism}
+\href{https://github.com/FreedomIntelligence/Tiermem}{TierMem} \cite{tiermem2026} is relevant because it links compressed memory to raw evidence and supports returning to those records when summaries are insufficient. We plan to begin with its lightweight \href{https://github.com/FreedomIntelligence/Tiermem/tree/d0d3896e917117ba0fcc1501e2b2dae891d2a2e3/jev_tiermem}{Jev implementation} \cite{jev2026}, which exposes a small Python interface without requiring us to train the paper's router. This reduces the number of components we must reproduce before testing an intervention. The trade-off is dependence on Jev's judgment service, whose access, latency, and cost need to be established. Results from this implementation will be identified as Jev results rather than presented as a reproduction of the paper's trained system.\par
 
-\subsubsection*{B. Evidence and error experiments}
-Use update/no-update cases to track stale reads, cross-role reuse, and recovery with a MAST-informed rubric. Keep stress-suite and official MemoryArena scores separate.\par
-
-\subsubsection*{C. A shared benchmark harness}
-Run matched conditions with isolated stores and saved traces/costs. Recompute metrics and run a limited evidence-budget/concurrency sweep.\par
+Other methods help define both the baseline and the limits of our contribution. \href{https://github.com/agiresearch/A-mem}{A-MEM} \cite{amem2025} and \href{https://github.com/mem0ai/mem0}{Mem0} \cite{mem02025} offer approaches to organizing and updating memory, but implementing several full backends would reduce the time available for controlled error analysis. \href{https://github.com/icedreamc/STALE/tree/main/cup_mem}{CUP-Mem} \cite{stale2026} is a higher-priority comparison because state revision and propagation-aware updates directly overlap our proposed mechanism. \href{https://github.com/caura-ai/caura}{Governed Shared Memory} \cite{governed2026} likewise establishes that provenance and supersession are existing ideas; its current service code differs from the paper artifact. Our intended contribution is a controlled study of evidence validity at Smurfs role handoffs. Recent-history and BM25 baselines will show whether the additional memory machinery offers benefits over simpler, cheaper alternatives.\par
 
 \clearpage
-\section{Implementation choices beyond agents, memory, and data}
-These choices define how the selected components work together. They are project decisions, not measured comparisons. Freeze pending choices after the feasibility pilot.\par
+\section{Datasets and task design}
+\href{https://github.com/xiaowu0162/LongMemEval}{LongMemEval} \cite{longmemeval2025} and \href{https://github.com/icedreamc/STALE}{STALE} \cite{stale2026} will be the primary memory evaluations because they address complementary parts of the problem. LongMemEval contains 500 questions spanning information extraction, cross-session reasoning, knowledge updates, temporal reasoning, and abstention. Its cleaned S release gives us an established setting for testing whether memory remains useful on ordinary questions. STALE contains 400 scenarios with three queries each, covering state resolution, premise resistance, and policy adaptation. It puts more emphasis on whether later evidence changes what the agent should believe or do. Using both should expose a possible trade-off: a mechanism that aggressively rejects old memory might handle updates better while losing useful information on unchanged histories.\par
 
-\subsection{Model and provider configuration}
-\textbf{Options:} hosted API models or local model serving.\par
+Memory QA alone cannot establish that several agents use evidence correctly during a task. We therefore plan a limited action study using \href{https://github.com/ZexueHe/MemoryArena}{MemoryArena} \cite{memoryarena2026}, whose interdependent sessions require earlier experience to inform later actions. The first candidate is its travel environment, with existing tools wrapped for Smurfs. This choice introduces practical uncertainty: the reviewed code is marked as a preview and requires an additional travel database. We will test a complete multi-session group before committing to a larger study. If the environment cannot be reproduced within the project budget, we will retain controlled cross-role episodes and state that end-to-end long-horizon action has not been evaluated.\par
 
-\textbf{Initial direction:} use a configurable API client and one fixed task/answer model across conditions. Choose provider, model/version, and spending cap after checking access, tool calls, context limits, and cost. Record Jev's separate service and scoring models. Local serving is optional.\par
+The remaining resources have supporting roles. \href{https://github.com/multi-agent-systems-failure-taxonomy/MAST}{MAST} \cite{mast2025} provides more than 1,600 annotated traces and a taxonomy of 14 failure modes, which can inform our error labels. Those traces are not replayable Smurfs tasks or a memory-training set. \href{https://github.com/HUST-AI-HYZ/MemoryAgentBench}{MemoryAgentBench} \cite{memoryagentbench2026} offers a fallback for incremental memory testing, while \href{https://github.com/snap-research/locomo}{LoCoMo} \cite{locomo2024} would support a conversational cross-check with TierMem's evaluation setting. Adding either is less urgent than completing the two primary evaluations and the action pilot, since a broader dataset list would not by itself strengthen evidence about our central failure mechanism.\par
 
-\subsection{Integration boundary}
-\textbf{Options:} a direct Python adapter or a separate MCP/HTTP service.\par
+LongMemEval and STALE are two evaluation resources, not a training/test pair. We will reserve complete histories, scenarios, or task groups for development and hold out separate groups for final evaluation. LongMemEval S, M, and oracle describe context settings rather than data splits. STALE uses LongMemEval-derived distractors, and MemoryAgentBench also shares some sources, so overlap must be checked and dependence disclosed. Gold answers, evidence-location labels, conflict explanations, and environment scoring state will remain outside the agent input. Memory will persist across the intended sessions of a task, while stores will be isolated between unrelated groups and experimental conditions.\par
 
-\textbf{Selected:} use Python calls to Jev's {\small\texttt{observe()}}, {\small\texttt{add\_summary()}}, and {\small\texttt{retrieve()}} \cite{jev2026}. Keep {\small\texttt{promote()}} write-back explicit. Smurfs generates answers; extend its verifier to receive evidence. Keep a replaceable interface within one process initially.\par
+\clearpage
+\section{Proposed method and implementation}
+\subsection{Evidence validity at role handoffs}
+The memory adapter will retain immutable observations and the source IDs behind each summary. It will also record who supplied the observation, when it entered the task, and whether a later update affects it. Before a role reuses a summary, the adapter will check for unresolved changes to its supporting evidence. When an explicit update comes from the user or an authorized environment observation, dependent conclusions will be marked for review and the relevant raw records retrieved within a fixed budget. The system will preserve the old record so that the change remains inspectable. A statement produced by another agent will not acquire authority merely because several roles repeat it.\par
 
-\subsection{Storage, retrieval, and memory scope}
-\textbf{Options:} Jev's local stores, an added vector database, or a shared memory service.\par
+This mechanism involves a substantive trade-off. Invalidating every related memory would be easy to implement, but could discard useful facts and trigger unnecessary retrieval. Checking too little could allow a stale conclusion to pass through several roles with a convincing citation. We will therefore distinguish the existence of a source from its current relevance and semantic support, and preserve uncertainty when the update is ambiguous. Paired update/no-update cases will test whether the intervention reacts to a meaningful change without unnecessarily disrupting an unchanged task. These cases form a separate stress suite; their scores will not be presented as official MemoryArena results. STALE will test how far the method extends to implicit conflicts without supplying gold update labels to the agent.\par
 
-\textbf{Selected:} reuse Jev's SQLite/FTS5 raw store and file-based summaries \cite{jev2026}. Add source IDs, update links, and validity metadata in the adapter. Serialize writes within groups; isolate groups and conditions. Keep retrieval infrastructure fixed across the intervention comparison.\par
+\subsection{Integration and engineering choices}
+We will start with a direct Python adapter around Jev's {\small\texttt{observe()}}, {\small\texttt{add\_summary()}}, and {\small\texttt{retrieve()}} operations, with {\small\texttt{promote()}} write-back invoked explicitly. Smurfs will remain responsible for generating the answer, and its verifier will be extended to inspect the returned evidence. A separate MCP or HTTP service could make the memory component independently deployable, but would add another execution boundary before the research behavior is established. Similarly, reusing Jev's SQLite/FTS5 raw store and file-based summaries avoids introducing a new vector database as an additional variable. Writes will be serialized within a task group; independent groups can run concurrently with separate stores.\par
 
-\subsection{Action environment and tool access}
-\textbf{Options:} MemoryArena travel tools, browser/file workflows, or domain simulations.\par
-
-\textbf{Proposed:} wrap one MemoryArena travel environment \cite{memoryarena2026}, subject to database access and a complete pilot trace. Match tools and limits across conditions. If infeasible, retain controlled cross-role tests and narrow claims; QA accuracy does not establish action success.\par
-
-\subsection{Evaluation, traces, and execution}
-\textbf{Options:} custom end-to-end judging and an external tracking stack, or official scorers with portable local artifacts.\par
-
-\textbf{Selected:} official score wrappers plus B's evidence/recovery rubric and human checks. C owns a Python runner, versioned configs, JSONL events, and CSV summaries. Freeze judges and sampling; log calls and failures. Run isolated groups concurrently. Dashboards, distributed scheduling, and GPU experiments are optional.\par
+For model access, a configurable API client is the initial choice because it allows us to study memory without first operating a local serving stack. The exact provider, model version, context limit, and spending cap will be fixed after checking tool-call reliability and pilot cost. The task/answer model will remain identical across the main conditions, while Jev's judgment service and any evaluation models will be recorded separately. Local serving remains an option if resources are available, but GPU scheduling is outside the initial claim. A Python runner will save versioned configurations, JSONL events, and CSV summaries so that all three members can execute the same protocol and recompute results from saved outputs without requiring a tracking service.\par
 
 \clearpage
 \section{Experimental design}
-\subsection{Comparisons and ablations}
-\begin{itemize}
-\item \textbf{Memory QA:} recent history, BM25 over identical raw chunks, unmodified Jev, and Jev plus our intervention. Fix the answer model; disclose additional models.
-\item \textbf{Closest method:} CUP-Mem on a matched STALE subset, subject to pilot feasibility. If unavailable, disclose the missing comparison and narrow claims.
-\item \textbf{Actions:} Smurfs without persistent memory, with Jev, and with our intervention; hold tools, observations, models, and limits constant.
-\item \textbf{Ablations:} disable validity filtering or raw-evidence recovery separately. Claims about multi-agent benefits require a budget-matched single-agent control.
-\end{itemize}
-\subsection{Data isolation and experimental scale}
-Split by complete history, scenario, or task group. Gold answers, evidence-location labels, conflict explanations, and scoring state remain evaluator-only. Retain intended multi-session history but isolate stores across groups and conditions; fix query-level write-back policy. LongMemEval S, M, and oracle are context settings, not splits.\par
+\subsection{Comparisons and experimental scale}
+The memory-QA comparison will include recent history, BM25 retrieval over identical raw chunks, unmodified Jev, and Jev with our intervention. Keeping the answer model and input histories fixed will help separate the effect of memory from changes in model capability. We will also attempt a matched CUP-Mem comparison on STALE, since it addresses the closest alternative explanation for any improvement. If its pilot is unsuccessful, the missing comparison will be disclosed and the resulting claims narrowed. The action study will compare Smurfs without persistent memory, Smurfs with Jev, and Smurfs with the intervention under identical tools, observations, and task limits.\par
 
-Pilot 10 development units per primary dataset and 3 travel groups. Provisionally target 100 held-out LongMemEval questions, 100 STALE scenarios, and 20 travel groups after cost estimation. Freeze IDs, prompts, models, judge, and budgets. Report coverage and counts; aim for three repetitions where affordable, with uncertainty grouped by history/scenario/task.\par
+Ablations will disable validity filtering and raw-evidence recovery separately to identify what each contributes. Claims that multi-agent execution itself is beneficial would additionally require a budget-matched single-agent control. We will begin with 10 development units per primary dataset and 3 travel groups, then use measured costs to assess provisional targets of 100 held-out LongMemEval questions, 100 STALE scenarios, and 20 travel groups. Before the final runs, we will freeze data IDs, prompts, model/judge versions, write-back policy, and budgets. Where affordable, three repetitions will help estimate variability; uncertainty will be grouped by shared history, scenario, or task rather than treating related queries as independent observations.\par
 
-\subsection{Quality, evidence, and recovery metrics}
-Use official scorers, category-level results, and human checks. Distinguish citation existence, evidence recall, and semantic support. For update cases:\par
+\subsection{Quality, evidence, and recovery}
+Official scorers will provide the main dataset results, supplemented by category-level analysis and human checks. Evidence analysis will distinguish a citation that resolves to a record, retrieval of the necessary evidence, and actual support for the decision. For update episodes, stale-use rate will measure stale-dependent decisions among eligible post-update decisions. Cross-role propagation will measure the fraction of update episodes in which another role reuses stale evidence, and recovery rate will measure the fraction that end with a corrected, successful outcome. The annotation rubric will specify these denominators and retain failures. Two reviewers will independently label a prespecified sample, with disagreements and representative successful and failed traces reported alongside aggregate scores.\par
 
-\begin{itemize}
-\item \textbf{Stale-use rate:} stale-dependent decisions / eligible post-update decisions.
-\item \textbf{Cross-role propagation rate:} update episodes with stale evidence reused by another role / update episodes.
-\item \textbf{Recovery rate:} corrected, successful episodes / update episodes.
-\end{itemize}
-Report denominators, failures, reviewer disagreement, and representative successful and failed traces.\par
-
-\subsection{Resource benchmark}
-Vary evidence budget and concurrency (1, 2, 4) separately on a fixed subset, holding tools and retry policy constant.\par
-
-Count all role, summary, retrieval, Jev, and retry calls, including failed runs. Separate ingestion, execution, and evaluation-judge costs. Report tokens, requests, throughput, and latency including queue time; unknown usage is not zero. Label injected delays as synthetic. API results do not establish GPU utilization or hardware-scheduling performance.\par
+\subsection{Resource measurements}
+The resource study will vary a small set of evidence budgets and, separately, task concurrency at levels 1, 2, and 4 on a fixed subset. This provides a manageable systems question: whether extra checking remains useful when retrieval is constrained or several tasks compete for API access. We will hold tools and retry policy fixed, measure throughput and latency including queue time, and count role, summary, retrieval, judgment, and retry calls even when a run fails. Ingestion, execution, and evaluation costs will be reported separately; missing provider usage will be marked unknown. These measurements describe API-level behavior, and injected delays will be labeled as synthetic rather than interpreted as GPU utilization or hardware-scheduling evidence.\par
 
 \clearpage
-\section{Work allocation and collaboration}
-Each member owns implementation, experiments, analysis, and writing. Proposed boundaries keep the packages independently testable while making one integrated project.\par
+\section{Collaboration, feasibility, and expected outcomes}
+The proposed allocation gives each member a component to implement and a question to investigate. Bijun Zeng will focus on memory integration and the intervention, Chengyu Tang on task evidence and error recovery, and Xiaochen Bai on the shared runner and resource evaluation. Each member will also run experiments, analyze results, and write the corresponding report sections. This division should allow independent progress once the interfaces are agreed, while keeping all three parts tied to the same experimental question.\par
 
 \par\begingroup
 \fontsize{10}{12.2}\selectfont
@@ -286,53 +147,19 @@ Each member owns implementation, experiments, analysis, and writing. Proposed bo
 \endhead
 \hline
 \endfoot
-\textbf{A - Memory} & Memory backends; Smurfs hooks; one update intervention; mechanism ablations. & Method, integration, ablations. \\
+Bijun Zeng & Memory baselines, Smurfs hooks, one update intervention, and mechanism ablations. & Method, integration, and ablation results. \\
 \noalign{\vskip 7pt}
-\textbf{B - Evidence and errors} & STALE input/label contract; one travel adapter; paired cases; evidence/error analysis. & Task design, evidence analysis, qualitative results. \\
+Chengyu Tang & STALE input/label contract, one travel adapter, paired cases, and evidence/error analysis. & Task design, evidence analysis, and qualitative results. \\
 \noalign{\vskip 7pt}
-\textbf{C - Benchmark} & Runner; QA loading; configs/splits; score wrappers; usage/latency and resource study. & Shared setup, efficiency, reproducibility. \\
-\noalign{\vskip 7pt}
-\end{longtable}
-\endgroup\par
-\subsubsection*{Independent and balanced work}
-Agree on interfaces first: A uses fixtures, B scores fixed traces, and C runs a dummy backend. Integrate in week 1 and cross-review. Each owner implements their own component.\par
-
-A owns one intervention, B one action environment, and C one runner with two resource axes. Rebalance a bounded adapter or scorer after the pilot; equal effort is a planning target.\par
-
-\subsubsection*{Report assembly}
-Each member writes their sections from one frozen protocol. Jointly edit the introduction, terminology, conclusions, limitations, and contributions. Interpret the combined results together.\par
-
-\section{Milestones, risks, and deliverables}
-\par\begingroup
-\fontsize{10}{12.2}\selectfont
-\setlength{\tabcolsep}{6pt}
-\renewcommand{\arraystretch}{1.18}
-\setlength{\LTpre}{5pt}
-\setlength{\LTpost}{7pt}
-\begin{longtable}{>{\raggedright\arraybackslash}p{\dimexpr 0.25\linewidth-2\tabcolsep\relax}>{\raggedright\arraybackslash}p{\dimexpr 0.75\linewidth-2\tabcolsep\relax}}
-\hline\noalign{\vskip 5pt}
-\textcolor{accent}{\textbf{Stage}} & \textcolor{accent}{\textbf{Team milestone and acceptance condition}} \\
-\noalign{\vskip 4pt}\hline\noalign{\vskip 5pt}
-\endfirsthead
-\hline\noalign{\vskip 5pt}
-\textcolor{accent}{\textbf{Stage}} & \textcolor{accent}{\textbf{Team milestone and acceptance condition}} \\
-\noalign{\vskip 4pt}\hline\noalign{\vskip 5pt}
-\endhead
-\hline
-\endfoot
-\textbf{Week 1: feasibility} & Agree on interfaces; pilot Smurfs/Jev, STALE/CUP-Mem, and travel. Verify access, costs, input boundaries, and a complete trace; freeze scope. \\
-\noalign{\vskip 7pt}
-\textbf{Weeks 2-3: development} & Finish baselines, intervention, cases, and logging. Tune on development data; freeze test manifests and protocol. \\
-\noalign{\vskip 7pt}
-\textbf{Week 4: evaluation} & Run comparisons, ablations, and resource sweeps. Retain failures, outputs, configurations, and scores. \\
-\noalign{\vskip 7pt}
-\textbf{Week 5: delivery} & Cross-reproduce key results; assemble report/poster/demo; verify individual contribution claims. \\
+Xiaochen Bai & Common runner, QA loading, configs/splits, score wrappers, and usage/latency experiments. & Shared setup, efficiency, and reproducibility. \\
 \noalign{\vskip 7pt}
 \end{longtable}
 \endgroup\par
-These are project stages, not official deadlines. A failed action pilot limits claims to memory and controlled cross-role tests. Disclose any Jev replacement.\par
+The main coordination task is to agree on task inputs, memory operations, evidence packets, trace events, and episode results before developing the full system. Bijun can then work against small fixtures, Chengyu can score fixed traces, and Xiaochen can run a dummy backend. An integrated example in the first week will expose interface problems early. Workload balance will come from limiting the scope to one intervention, one action environment, and one runner with two resource axes; if the pilot reveals an uneven burden, a bounded adapter or scorer can be reassigned. The benchmark owner will not be responsible for implementing the other members' methods or environments.\par
 
-Deliver code/configs, cases, traces, analysis, and reproduction instructions. Submit a LaTeX report with individual contributions, GitHub source, and a poster presentation \cite{course2026}, following the confirmed course format. Report positive or negative results.\par
+The first week is a feasibility stage for Smurfs/Jev access, STALE/CUP-Mem, the travel environment, and actual model costs. Weeks two and three will develop the agreed components and baselines using development data, followed by protocol freezing. Week four will run the main comparisons, ablations, and resource study; the final week will be used for cross-reproduction and report/poster preparation. These are internal stages rather than official course deadlines. If Jev or the action environment proves unavailable, the replacement or reduced scope will be documented explicitly so that the reported conclusions remain consistent with the implemented system.\par
+
+The final report will be assembled around the shared protocol. Each member will draft their method and results sections, while the introduction, terminology, limitations, and conclusions will be edited together to explain how the findings relate. Deliverables will include the adapter and intervention, task cases, source-linked traces, reproducible configurations, and analysis, together with the course's LaTeX report, GitHub source, and poster presentation \cite{course2026}. A useful outcome could be either improved recovery at an acceptable cost or evidence that the extra checking is too expensive or too aggressive for particular tasks; both would clarify when this form of memory control is worth using.\par
 
 \clearpage
 \begin{thebibliography}{99}
