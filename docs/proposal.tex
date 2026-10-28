@@ -1,96 +1,294 @@
 % Generated from docs/proposal.md and docs/references.bib.
 % Edit those sources, then run python scripts/build_proposal.py.
-\documentclass[a4paper,10pt]{article}
-\usepackage[margin=21mm,top=18mm,bottom=20mm]{geometry}
+\documentclass[a4paper,11pt]{article}
+\usepackage[margin=21mm,top=21mm,bottom=21mm,headheight=14pt]{geometry}
 \usepackage{xcolor}
-\definecolor{accent}{HTML}{204B63}
-\usepackage[colorlinks=true,linkcolor=accent,urlcolor=accent,citecolor=accent]{hyperref}
+\definecolor{accent}{HTML}{203B59}
+\definecolor{linkblue}{HTML}{145BC4}
+\definecolor{tablehead}{HTML}{EDF3FA}
+\usepackage[colorlinks=true,linkcolor=linkblue,urlcolor=linkblue,citecolor=linkblue]{hyperref}
+\newcommand{\personal}[1]{\textcolor{linkblue}{\textbf{[#1]}}}
+\usepackage{array,longtable}
+\setlength{\LTleft}{0pt}
+\setlength{\LTright}{0pt}
 \usepackage{enumitem}
-\setlist[itemize]{leftmargin=1.5em,topsep=3pt,itemsep=2pt,parsep=0pt}
+\setlist[itemize]{leftmargin=1.5em,topsep=5pt,itemsep=5pt,parsep=0pt}
 \usepackage{titlesec}
-\titleformat{\section}{\large\bfseries}{\thesection}{0.6em}{}
-\titlespacing*{\section}{0pt}{10pt}{4pt}
+\titleformat{\section}{\large\bfseries\color{accent}}{\thesection}{0.6em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{0.6em}{}
+\titlespacing*{\section}{0pt}{13pt}{7pt}
+\titlespacing*{\subsection}{0pt}{10pt}{5pt}
 \setlength{\parindent}{0pt}
-\setlength{\parskip}{4pt}
-\linespread{1.05}
-\pagestyle{plain}
+\setlength{\parskip}{7pt}
+\linespread{1.08}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{accent}EviRecall}
+\fancyhead[R]{\small\color{accent}Research Proposal}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.3pt}
+\fancypagestyle{plain}{\fancyhf{}\fancyfoot[C]{\small\thepage}\renewcommand{\headrulewidth}{0pt}}
 \clubpenalty=10000
 \widowpenalty=10000
 \emergencystretch=3em
 \sloppy
-\hypersetup{pdftitle={EviRecall Proposal v0.2},pdfauthor={EviRecall Team}}
+\hypersetup{pdftitle={EviRecall Proposal v0.3},pdfauthor={EviRecall Team}}
 \begin{document}
+\thispagestyle{plain}
 {\color{accent}\LARGE\bfseries EviRecall}\par
 {\large\bfseries Evidence-Aware Memory for Long-Horizon Multi-Agent Tasks}\par
 \vspace{4pt}\hrule\vspace{7pt}
-\textbf{Project proposal v0.2 | 27 October 2026 | CSC5051 / CSC6052 / MDS5110}
+\textbf{Research proposal v0.3 | 28 October 2026 | CSC5051 / CSC6052 / MDS5110}
 
-\textbf{Team:} Member A, Member B, Member C (names and student IDs to be added). \textbf{Status:} proposed research; Smurfs is selected, while dataset scope and the intervention will be frozen after a feasibility pilot. No end-to-end performance results are claimed.
+\textbf{Project repository:} \href{https://github.com/SatouJotaro/evirecall}{github.com/SatouJotaro/evirecall}
+
+\begingroup
+\fontsize{9.7}{11.8}\selectfont
+\setlength{\tabcolsep}{6pt}
+\renewcommand{\arraystretch}{1.18}
+\setlength{\LTpre}{5pt}
+\setlength{\LTpost}{7pt}
+\begin{longtable}{>{\raggedright\arraybackslash}p{\dimexpr 0.12\linewidth-2\tabcolsep\relax}>{\raggedright\arraybackslash}p{\dimexpr 0.25\linewidth-2\tabcolsep\relax}>{\raggedright\arraybackslash}p{\dimexpr 0.25\linewidth-2\tabcolsep\relax}>{\raggedright\arraybackslash}p{\dimexpr 0.38\linewidth-2\tabcolsep\relax}}
+\hline\noalign{\vskip 5pt}
+\textcolor{accent}{\textbf{Member}} & \textcolor{accent}{\textbf{Full name}} & \textcolor{accent}{\textbf{Student ID}} & \textcolor{accent}{\textbf{University email}} \\
+\noalign{\vskip 4pt}\hline\noalign{\vskip 5pt}
+\endfirsthead
+\hline\noalign{\vskip 5pt}
+\textcolor{accent}{\textbf{Member}} & \textcolor{accent}{\textbf{Full name}} & \textcolor{accent}{\textbf{Student ID}} & \textcolor{accent}{\textbf{University email}} \\
+\noalign{\vskip 4pt}\hline\noalign{\vskip 5pt}
+\endhead
+\hline
+\endfoot
+A & \personal{Member A name} & \personal{Member A ID} & \personal{Member A email} \\[5pt]
+B & \personal{Member B name} & \personal{Member B ID} & \personal{Member B email} \\[5pt]
+C & \personal{Member C name} & \personal{Member C ID} & \personal{Member C email} \\[5pt]
+\end{longtable}
+\endgroup
+Personal-information placeholders are blue in the PDF and editable LaTeX. Replace them before submission.
+
+\textbf{Project summary.} We propose to extend Smurfs with evidence-aware shared memory and investigate whether checking recalled evidence prevents stale information from affecting later decisions. Our contribution will combine one memory intervention, controlled evidence/error experiments, and a reproducible benchmark harness. This is a research plan; no performance improvements are claimed.
 
 \section{Motivation and research questions}
-Long-running agents reuse compressed histories, tool observations, and conclusions produced by other roles. A summary can omit a decisive constraint; an outdated but well-cited conclusion can then influence later decisions. For example, a planner may reuse a travel plan after the user changes a budget, while a verifier checks only the final answer. This illustrates a potential failure, not an observed result.
+Multi-agent tasks depend on information passed between planning, execution, answering, and verification roles. Compressed memory can omit a decisive constraint. Even a correctly cited summary can become outdated after the user or environment supplies new evidence. Reusing that summary may propagate an error across roles and subsequent tasks.
 
-We will study this problem in Smurfs \cite{smurfs2025}. \textbf{RQ1:} How does tiered memory affect recall and downstream task completion? \textbf{RQ2:} Does checking shared evidence validity reduce stale-information reuse and improve recovery? \textbf{RQ3:} How does this trade-off change with retrieval budgets and service load? Resource experiments evaluate the same system; they are not a separate GPU-scheduling project.
+For example, a travel-planning agent may retain a plan after a user reduces the budget. Later roles might reuse that plan and verify only its final wording, without revisiting the changed constraint. This is an illustrative scenario, not an experimental observation.
 
-\section{Related work and technology selection}
-\textbf{Agent backbone.} Smurfs provides explicit planning, execution, answering, and verification roles and connects to the instructor's research \cite{smurfs2025}. Its tool-planning results do not establish persistent shared memory or long-horizon performance. Deep Agents offers subagents and context management \cite{deepagents2026}; Magentic-One targets broader web/file workflows \cite{magentic2024}. They remain alternatives rather than additional implementation targets. TwinMarket and EasyMED introduce financial and medical evaluation requirements outside our scope \cite{twinmarket2025} \cite{easymed2025}.
+\begin{itemize}
+\item \textbf{RQ1 - Memory utility:} Does tiered memory improve recall and subsequent task completion over recent history and ordinary retrieval?
+\item \textbf{RQ2 - Evidence and recovery:} Does checking evidence validity reduce stale-information reuse across roles and improve recovery after an update?
+\item \textbf{RQ3 - Resource trade-offs:} How do evidence budgets and task concurrency affect quality, cost, and completion time?
+\end{itemize}
+\textbf{Current choice.} Use Smurfs as the fixed multi-agent backbone; pilot Jev TierMem as the first memory backend; evaluate general memory with LongMemEval and stale-memory behavior with STALE. Add a small MemoryArena action study if its environment passes the feasibility pilot. MAST informs failure annotation. No parameter training is required in the first version.
 
-\textbf{Memory backend.} TierMem links compressed memory to raw evidence and allocates retrieval effort between the two tiers \cite{tiermem2026}. Its repository also provides lightweight Jev TierMem \cite{jev2026}. We will first test Jev's Python interface, avoiding reproduction of the paper's trained router and vector-service stack. The trade-off is an additional judgment-service dependency and integration work. Jev and the trained paper implementation must be identified separately. A-MEM and Mem0 inform our comparison of memory linking and updating, but neither is a required implementation target \cite{amem2025} \cite{mem02025}.
+\textbf{Expected outputs.} A reusable memory adapter and intervention; source-linked task traces and error analysis; reproducible comparisons and resource measurements. The following sections document the alternatives considered and how this scope was chosen.
 
-\textbf{Closest work and contribution.} STALE provides both an implicit-conflict benchmark and CUP-Mem, which already performs state consolidation and propagation-aware updates \cite{stale2026}. Governed Shared Memory already studies temporal supersession and cross-agent provenance \cite{governed2026}. We therefore do not claim invalidation, provenance links, or shared memory as new ideas. Our intended contribution is a reproducible Smurfs integration and a controlled study of when evidence validation prevents cross-role error propagation under limited budgets. Stronger novelty claims require experimental support and comparison with CUP-Mem.
+\clearpage
+\section{Multi-agent and memory selection}
+We reviewed the downloaded papers, official repositories, and relevant interfaces. Selection favors task fit, visible integration points, reproducible evidence, and a feasible three-person workload. This review is not a claim that every candidate has been reproduced.
 
-\section{Proposed system and intervention}
-\textbf{Integration.} Smurfs will retain planning and execution. A replaceable adapter will receive task-scoped events and return source-linked evidence. We will use Jev's {\small\texttt{observe()}} after permitted observations, {\small\texttt{add\_summary()}} for source-linked summaries, and {\small\texttt{retrieve()}} before evidence-dependent planning or execution. Smurfs will generate the task answer. Write-back via {\small\texttt{promote()}} is explicit; retrieval alone does not promote findings. The Smurfs verifier will receive relevant evidence as well as the candidate answer.
+\subsection{Multi-agent systems}
+\begingroup
+\fontsize{9.7}{11.8}\selectfont
+\setlength{\tabcolsep}{6pt}
+\renewcommand{\arraystretch}{1.18}
+\setlength{\LTpre}{5pt}
+\setlength{\LTpost}{7pt}
+\begin{longtable}{>{\raggedright\arraybackslash}p{\dimexpr 0.22\linewidth-2\tabcolsep\relax}>{\raggedright\arraybackslash}p{\dimexpr 0.49\linewidth-2\tabcolsep\relax}>{\raggedright\arraybackslash}p{\dimexpr 0.29\linewidth-2\tabcolsep\relax}}
+\hline\noalign{\vskip 5pt}
+\textcolor{accent}{\textbf{Candidate and code}} & \textcolor{accent}{\textbf{Relevant capability and trade-off}} & \textcolor{accent}{\textbf{Decision}} \\
+\noalign{\vskip 4pt}\hline\noalign{\vskip 5pt}
+\endfirsthead
+\hline\noalign{\vskip 5pt}
+\textcolor{accent}{\textbf{Candidate and code}} & \textcolor{accent}{\textbf{Relevant capability and trade-off}} & \textcolor{accent}{\textbf{Decision}} \\
+\noalign{\vskip 4pt}\hline\noalign{\vskip 5pt}
+\endhead
+\hline
+\endfoot
+\href{https://github.com/FreedomIntelligence/Smurfs}{Smurfs} \cite{smurfs2025} & Explicit planning, execution, answering, and verification; inspectable tool loop. Persistent shared memory must be added. & \textbf{Selected backbone.} Fits the topic and the instructor's research. \\[5pt]
+\href{https://github.com/langchain-ai/deepagents}{Deep Agents} / \href{https://github.com/langchain-ai/langgraph}{LangGraph} \cite{deepagents2026} & Subagents, context/file tools, and persistence primitives reduce engineering work. They introduce a different orchestration stack. & Engineering alternative; no second backbone in version 1. \\[5pt]
+\href{https://github.com/microsoft/autogen}{Magentic-One} \cite{magentic2024} & General web/file/code roles support broad workflows, adding environment setup beyond our first study. & Architecture reference; current AutoGen source is archived. \\[5pt]
+\href{https://github.com/FreedomIntelligence/TwinMarket}{TwinMarket} \cite{twinmarket2025} & Multi-agent financial and social simulation introduces domain-specific tasks and evaluation. & Reviewed; outside the selected task scope. \\[5pt]
+\href{https://github.com/FreedomIntelligence/EasyMED}{EasyMED} \cite{easymed2025} & Multi-agent patient simulation and educational evaluation require medical task definitions. & Reviewed; outside the selected task scope. \\[5pt]
+\end{longtable}
+\endgroup
+\textbf{Why Smurfs:} its role boundaries let us observe where evidence enters, is summarized, is reused, and is verified. We will keep this backbone fixed while changing memory behavior.
 
-\textbf{Evidence model.} Immutable records will distinguish user statements, tool observations, agent inferences, and verifier opinions. Summaries and decisions will record their source IDs. Roles within one task group share memory; independent groups and experimental conditions remain isolated. One coordinator will serialize writes initially. Multiple roles do not imply parallel execution, and inter-agent agreement does not establish truth.
+\subsection{Memory mechanisms}
+\begingroup
+\fontsize{9.7}{11.8}\selectfont
+\setlength{\tabcolsep}{6pt}
+\renewcommand{\arraystretch}{1.18}
+\setlength{\LTpre}{5pt}
+\setlength{\LTpost}{7pt}
+\begin{longtable}{>{\raggedright\arraybackslash}p{\dimexpr 0.22\linewidth-2\tabcolsep\relax}>{\raggedright\arraybackslash}p{\dimexpr 0.49\linewidth-2\tabcolsep\relax}>{\raggedright\arraybackslash}p{\dimexpr 0.29\linewidth-2\tabcolsep\relax}}
+\hline\noalign{\vskip 5pt}
+\textcolor{accent}{\textbf{Mechanism and source}} & \textcolor{accent}{\textbf{Relevant capability and trade-off}} & \textcolor{accent}{\textbf{Decision}} \\
+\noalign{\vskip 4pt}\hline\noalign{\vskip 5pt}
+\endfirsthead
+\hline\noalign{\vskip 5pt}
+\textcolor{accent}{\textbf{Mechanism and source}} & \textcolor{accent}{\textbf{Relevant capability and trade-off}} & \textcolor{accent}{\textbf{Decision}} \\
+\noalign{\vskip 4pt}\hline\noalign{\vskip 5pt}
+\endhead
+\hline
+\endfoot
+Recent history / BM25 & Simple controls: limited context versus retrieval over raw chunks. Neither explicitly tracks superseded conclusions. & Required low-complexity baselines. \\[5pt]
+\href{https://github.com/FreedomIntelligence/Tiermem/tree/d0d3896e917117ba0fcc1501e2b2dae891d2a2e3/jev_tiermem}{Jev TierMem} \cite{jev2026} & Lightweight summary/raw-evidence storage with a judgment service; exposes Python integration points. & \textbf{First backend:} small interface, no router training. Pilot service access. \\[5pt]
+\href{https://github.com/FreedomIntelligence/Tiermem}{TierMem paper implementation} \cite{tiermem2026} & Provenance-linked tiers and trained routing; reproducing its training/service stack adds work. & Method reference; distinct from Jev, not a second mandatory build. \\[5pt]
+\href{https://github.com/icedreamc/STALE/tree/main/cup_mem}{CUP-Mem} \cite{stale2026} & State revision and propagation-aware updates directly overlap our proposed intervention. & Closest method comparator on a matched STALE subset. \\[5pt]
+\href{https://github.com/agiresearch/A-mem}{A-MEM} \cite{amem2025} / \href{https://github.com/mem0ai/mem0}{Mem0} \cite{mem02025} & Dynamic memory organization, links, and updates offer additional designs and dependencies. & Related methods; not required in the initial comparison. \\[5pt]
+\href{https://github.com/caura-ai/caura}{Governed Shared Memory / Caura} \cite{governed2026} & Temporal supersession and provenance across agents; current service code differs from the paper artifact. & Systems reference; no full service deployment planned. \\[5pt]
+\end{longtable}
+\endgroup
+\clearpage
+\section{Dataset and benchmark selection}
+We separate memory-question answering, action execution, and retrospective failure analysis. A dataset with long histories does not automatically evaluate multi-agent collaboration or successful actions.
 
-\textbf{Candidate intervention.} Begin with explicit, authoritative updates to identifiable constraints. Preserve old records, record supersession, mark dependent summaries for review, and check affected evidence before reuse. When budget permits, retrieve raw evidence and rebuild the affected conclusion; otherwise expose uncertainty. Temporal order alone will not resolve unrelated or ambiguous claims. Automatic implicit-conflict detection is an extension, not an assumed capability: STALE will also test the explicit-update mechanism's limitations.
+\begingroup
+\fontsize{9.7}{11.8}\selectfont
+\setlength{\tabcolsep}{6pt}
+\renewcommand{\arraystretch}{1.18}
+\setlength{\LTpre}{5pt}
+\setlength{\LTpost}{7pt}
+\begin{longtable}{>{\raggedright\arraybackslash}p{\dimexpr 0.22\linewidth-2\tabcolsep\relax}>{\raggedright\arraybackslash}p{\dimexpr 0.49\linewidth-2\tabcolsep\relax}>{\raggedright\arraybackslash}p{\dimexpr 0.29\linewidth-2\tabcolsep\relax}}
+\hline\noalign{\vskip 5pt}
+\textcolor{accent}{\textbf{Resource and code}} & \textcolor{accent}{\textbf{What it evaluates; relevant limitation}} & \textcolor{accent}{\textbf{Use in EviRecall}} \\
+\noalign{\vskip 4pt}\hline\noalign{\vskip 5pt}
+\endfirsthead
+\hline\noalign{\vskip 5pt}
+\textcolor{accent}{\textbf{Resource and code}} & \textcolor{accent}{\textbf{What it evaluates; relevant limitation}} & \textcolor{accent}{\textbf{Use in EviRecall}} \\
+\noalign{\vskip 4pt}\hline\noalign{\vskip 5pt}
+\endhead
+\hline
+\endfoot
+\href{https://github.com/xiaowu0162/LongMemEval}{LongMemEval} \cite{longmemeval2025} & 500 questions covering extraction, cross-session reasoning, updates, time, and abstention. Primarily memory QA. & \textbf{Primary:} cleaned S release for general memory utility. \\[5pt]
+\href{https://github.com/icedreamc/STALE}{STALE} \cite{stale2026} & 400 scenarios, three queries each: state resolution, premise resistance, and policy adaptation. Tests implicit conflicts. & \textbf{Primary:} stale-memory behavior and CUP-Mem comparison. \\[5pt]
+\href{https://github.com/ZexueHe/MemoryArena}{MemoryArena} \cite{memoryarena2026} & Interdependent multi-session actions. Travel tools require an additional database; code is marked preview. & Small action pilot, then a limited travel study if feasible. \\[5pt]
+\href{https://github.com/multi-agent-systems-failure-taxonomy/MAST}{MAST / MAST-Data} \cite{mast2025} & 1,600+ annotated traces and 14 failure modes. Traces are not replayable Smurfs tasks. & Annotation reference, not a memory-training dataset. \\[5pt]
+\href{https://github.com/HUST-AI-HYZ/MemoryAgentBench}{MemoryAgentBench} \cite{memoryagentbench2026} & Incremental memory evaluation, including conflict resolution; some sources overlap LongMemEval. & Fallback for memory testing, not a substitute for action evidence. \\[5pt]
+\href{https://github.com/snap-research/locomo}{LoCoMo} \cite{locomo2024} & Long conversational memory; useful for comparison with TierMem. Less direct coverage of our failure question. & Optional cross-check; excluded from the minimum experiment set. \\[5pt]
+\end{longtable}
+\endgroup
+\textbf{Resulting plan:} two primary memory evaluations plus one action pilot, using existing releases. These are not a training/test pair. We will reserve disjoint development data for prompts and thresholds; the initial method does not train model parameters. STALE uses LongMemEval-derived distractors, so overlap must be audited and cross-dataset dependence disclosed.
 
-\section{Data and experimental protocol}
-\textbf{Two primary memory evaluations.} Use cleaned LongMemEval\_S for general memory abilities (500 questions) \cite{longmemeval2025} and STALE for state resolution, premise resistance, and policy adaptation (400 scenarios, three queries each) \cite{stale2026}. These are evaluation resources, not a training/test pair. Version 1 trains no model parameters; disjoint development data support prompt and threshold choices. STALE contains LongMemEval-derived distractors, so shared histories must be audited rather than treating both datasets as independent replications. Use the existing STALE release instead of regenerating a supposedly equivalent benchmark.
+\section{What we will build}
+\textbf{A. Memory integration and one intervention.} Connect Smurfs to a replaceable adapter with immutable source IDs and typed observations. Before reusing a summary affected by an explicit, authoritative update, check its validity, mark dependent conclusions for review, and recover raw evidence within budget. Preserve old records; ambiguous changes remain uncertain. Provenance and invalidation are existing ideas; our contribution is their controlled study at Smurfs role handoffs. STALE tests generalization to implicit conflicts without gold update labels.
 
-\textbf{Action and failure study.} Pilot MemoryArena travel planning using its existing tools and constraints \cite{memoryarena2026}. Retain original tasks and separately create paired update/no-update variants with a recorded intervention point. These variants are an EviRecall stress suite, not official MemoryArena scores. MAST's 14-category taxonomy and annotated traces inform failure annotation \cite{mast2025}; they are not executable training tasks for Smurfs. If the action environment proves infeasible, explicitly limit conclusions to memory and controlled cross-role tests. MemoryAgentBench's conflict-resolution subset is a fallback, with source overlap checked \cite{memoryagentbench2026}.
+\textbf{B. Evidence and error experiments.} Paired update/no-update variants form a separate stress suite, not official MemoryArena scores. Track stale-evidence reads, reuse across roles, and recovery. Use STALE and the travel pilot, with evidence-support labels and a MAST-informed error rubric.
 
-\textbf{Comparisons.} At the memory layer, compare recent history, BM25 over identical raw chunks, unmodified Jev, and Jev with our intervention. Include CUP-Mem on a matched STALE subset if it passes the pilot; otherwise disclose the missing direct comparison and narrow claims. Fix the task-answer model and disclose additional component models. Action experiments compare Smurfs without persistent memory, with unmodified Jev, and with our intervention. Ablations disable validity filtering and raw-evidence recovery separately. Any claim that multiple agents help requires a budget-matched single-agent control.
+\textbf{C. A shared benchmark harness.} Run matched conditions, isolate stores, collect traces and costs, and recompute metrics from saved outputs. Add a limited budget/concurrency sweep.
 
-\textbf{Isolation and scale.} Split by complete history or task group before selecting questions. Answers, evidence-location labels, conflict explanations, and environment scoring state remain evaluator-only. Reset stores between conditions and fix whether question-level write-back is allowed. LongMemEval S, M, and oracle are context settings, not splits. Start with 10 development units per primary dataset and 3 travel groups; provisionally target 100 held-out LongMemEval questions, 100 held-out STALE scenarios, and 20 travel groups, subject to measured costs and available disjoint groups. Freeze IDs, models, prompts, judge, and budgets before testing. Report subset coverage and three repetitions where affordable; estimate uncertainty at the history/scenario/group level.
+The proposed adapter uses {\small\texttt{observe()}}, {\small\texttt{add\_summary()}}, and {\small\texttt{retrieve()}}; write-back via {\small\texttt{promote()}} is explicit. Smurfs generates answers and verifies them against the returned evidence.
 
-\section{Metrics and resource experiments}
-Use official memory scorers and task-success criteria, category-level results, and human checks. Distinguish citation existence, evidence recall, and semantic support. On the update suite, measure stale-use rate (stale-dependent decisions / eligible post-update decisions), cross-role propagation (update episodes with stale evidence reused by another role / update episodes), and recovery (corrected successful episodes / update episodes). Report counts and annotation disagreement; inspect successful and failed trajectories.
+\clearpage
+\section{Experimental design}
+\subsection{Comparisons and ablations}
+\begin{itemize}
+\item \textbf{Memory QA:} recent history, BM25 over identical raw chunks, unmodified Jev, and Jev plus our intervention. Fix the answer model; disclose additional models.
+\item \textbf{Closest method:} CUP-Mem on a matched STALE subset, subject to pilot feasibility. If unavailable, disclose the missing comparison and narrow claims.
+\item \textbf{Actions:} Smurfs without persistent memory, with Jev, and with our intervention; hold tools, observations, models, and limits constant.
+\item \textbf{Ablations:} disable validity filtering or raw-evidence recovery separately. Claims about multi-agent benefits require a budget-matched single-agent control.
+\end{itemize}
+\subsection{Data isolation and experimental scale}
+Split by complete history, scenario, or task group. Gold answers, evidence-location labels, conflict explanations, and scoring state remain evaluator-only. Retain intended multi-session history but isolate stores across groups and conditions; fix query-level write-back policy. LongMemEval S, M, and oracle are context settings, not splits.
 
-Record all role calls, memory writes, summaries, retrieval planning, Jev judgments, retries, timeouts, and terminal failures. Separate ingestion, online execution, and evaluation-judge costs; unavailable usage is unknown, not zero. Compare a small predeclared budget grid and concurrency of 1, 2, and 4, with fixed workload and retry policy. Report quality, tokens, request counts, throughput, and latency including queue time. Label injected delays as synthetic. API measurements cannot establish GPU utilization or hardware-scheduling performance. Avoid an unmanageable model-by-dataset-by-load factorial experiment.
+Pilot 10 development units per primary dataset and 3 travel groups. Provisionally target 100 held-out LongMemEval questions, 100 STALE scenarios, and 20 travel groups after cost estimation. Freeze IDs, prompts, models, judge, and budgets. Report coverage and counts; aim for three repetitions where affordable, with uncertainty grouped by history/scenario/task.
 
-\section{Three work packages and collaboration}
-\begin{samepage}\textbf{Member A: memory method and agent hooks.} Own the adapter, minimal Smurfs read/write and verifier hooks, Jev baseline, update intervention, and mechanism ablations. Deliver a documented module and retrieval examples; write the method and ablation sections. This package favors algorithm work.\par\end{samepage}
+\subsection{Quality, evidence, and recovery metrics}
+Use official scorers, category-level results, and human checks. Distinguish citation existence, evidence recall, and semantic support. For update cases:
 
-\begin{samepage}\textbf{Member B: evidence and error experiments.} Own the STALE/task data contract, travel-tool adaptation, paired update scenarios, evidence-support rubric, MAST-informed diagnosis, and recovery analysis. Deliver versioned scenarios and an independently usable trace scorer; write the task design and error-analysis sections. Begin with fixtures and recorded traces without waiting for A's module.\par\end{samepage}
+\begin{itemize}
+\item \textbf{Stale-use rate:} stale-dependent decisions / eligible post-update decisions.
+\item \textbf{Cross-role propagation rate:} update episodes with stale evidence reused by another role / update episodes.
+\item \textbf{Recovery rate:} corrected, successful episodes / update episodes.
+\end{itemize}
+Report denominators, failures, reviewer disagreement, and representative successful and failed traces.
 
-\begin{samepage}\textbf{Member C: benchmark and resource measurement.} Own the common runner, split/configuration manifests, memory-QA loading, cost/event collection, official-scorer wrappers, and budget/load experiments. Deliver reproducible commands and result aggregation; write the evaluation setup and efficiency sections. This package favors backend/AI infrastructure. C does not own all task environments or baseline implementations.\par\end{samepage}
+\subsection{Resource benchmark}
+Vary evidence budget and concurrency (1, 2, 4) separately on a fixed subset, holding tools and retry policy constant.
 
-Each package includes implementation, experiments, analysis, and writing. Agree on a minimal memory/event/task interface first, integrate a small example in week 1, and cross-review another package. Merge individual sections around one protocol and result set; jointly edit the abstract, conclusions, terminology, and contribution statement. Independent ownership requires early integration rather than postponing integration until the report.
+Count all role, summary, retrieval, Jev, and retry calls, including failed runs. Separate ingestion, execution, and evaluation-judge costs. Report tokens, requests, throughput, and latency including queue time; unknown usage is not zero. Label injected delays as synthetic. API results do not establish GPU utilization or hardware-scheduling performance.
 
-\section{Milestones and expected deliverables}
-\textbf{Week 1:} interface fixtures; small Smurfs/Jev, STALE/CUP-Mem, and travel-environment feasibility checks; cost estimate and scope freeze. \textbf{Weeks 2-3:} baselines, one intervention, shared traces, and development-only refinement. \textbf{Week 4:} frozen tests, paired comparisons, ablations, and a small resource sweep. \textbf{Week 5:} cross-reproduction, report, poster, and demonstration. These are proposed stages, not official course deadlines.
+\clearpage
+\section{Work allocation and collaboration}
+Each member owns implementation, experiments, analysis, and writing. Proposed boundaries keep the packages independently testable while making one integrated project.
 
-Deliver a reusable memory integration, controlled evidence/error experiments, and a reproducible harness with positive or negative results. Artifacts will identify upstream versions, changes, configurations, splits, and limitations. Course deliverables include a LaTeX report, contribution statement, GitHub source, and poster presentation \cite{course2026}. Names, provider access, spending limits, the action environment, and the submission template remain to be finalized. This proposal specifies the research design; implementation belongs to the three members.
+\begingroup
+\fontsize{9.7}{11.8}\selectfont
+\setlength{\tabcolsep}{6pt}
+\renewcommand{\arraystretch}{1.18}
+\setlength{\LTpre}{5pt}
+\setlength{\LTpost}{7pt}
+\begin{longtable}{>{\raggedright\arraybackslash}p{\dimexpr 0.22\linewidth-2\tabcolsep\relax}>{\raggedright\arraybackslash}p{\dimexpr 0.49\linewidth-2\tabcolsep\relax}>{\raggedright\arraybackslash}p{\dimexpr 0.29\linewidth-2\tabcolsep\relax}}
+\hline\noalign{\vskip 5pt}
+\textcolor{accent}{\textbf{Owner}} & \textcolor{accent}{\textbf{Main implementation and experiment responsibility}} & \textcolor{accent}{\textbf{Report contribution}} \\
+\noalign{\vskip 4pt}\hline\noalign{\vskip 5pt}
+\endfirsthead
+\hline\noalign{\vskip 5pt}
+\textcolor{accent}{\textbf{Owner}} & \textcolor{accent}{\textbf{Main implementation and experiment responsibility}} & \textcolor{accent}{\textbf{Report contribution}} \\
+\noalign{\vskip 4pt}\hline\noalign{\vskip 5pt}
+\endhead
+\hline
+\endfoot
+\textbf{A - Memory} & Memory backends, minimal Smurfs read/write and verifier hooks, one update intervention, and mechanism ablations. & Method, integration design, and ablation results. \\[5pt]
+\textbf{B - Evidence and errors} & STALE input/label contract, one travel-tool adapter, paired scenarios, evidence-support rubric, and error/recovery analysis. & Task design, evidence analysis, and qualitative results. \\[5pt]
+\textbf{C - Benchmark} & Common runner, memory-QA loading, configuration/split manifests, score wrappers, usage/latency logging, and resource experiments. & Shared experimental setup, efficiency results, and reproducibility. \\[5pt]
+\end{longtable}
+\endgroup
+\textbf{Independent development.} Agree on task, memory, evidence, trace, and result interfaces first. A develops against fixtures, B scores fixed traces, and C runs a dummy backend. Integrate in week 1 and cross-review packages; C does not implement all baselines or environments.
 
+\textbf{Balanced scope.} A owns one intervention, B one action environment, and C one runner with two resource axes. After the pilot, rebalance a bounded adapter or scorer if needed; equal effort is a planning target.
+
+\textbf{Report assembly.} Each member writes their experimental sections from one frozen protocol. Jointly edit the introduction, terminology, conclusions, limitations, and contributions. Integrate early and interpret the combined results together.
+
+\section{Milestones, risks, and deliverables}
+\begingroup
+\fontsize{9.7}{11.8}\selectfont
+\setlength{\tabcolsep}{6pt}
+\renewcommand{\arraystretch}{1.18}
+\setlength{\LTpre}{5pt}
+\setlength{\LTpost}{7pt}
+\begin{longtable}{>{\raggedright\arraybackslash}p{\dimexpr 0.25\linewidth-2\tabcolsep\relax}>{\raggedright\arraybackslash}p{\dimexpr 0.75\linewidth-2\tabcolsep\relax}}
+\hline\noalign{\vskip 5pt}
+\textcolor{accent}{\textbf{Stage}} & \textcolor{accent}{\textbf{Team milestone and acceptance condition}} \\
+\noalign{\vskip 4pt}\hline\noalign{\vskip 5pt}
+\endfirsthead
+\hline\noalign{\vskip 5pt}
+\textcolor{accent}{\textbf{Stage}} & \textcolor{accent}{\textbf{Team milestone and acceptance condition}} \\
+\noalign{\vskip 4pt}\hline\noalign{\vskip 5pt}
+\endhead
+\hline
+\endfoot
+\textbf{Week 1: feasibility} & Agree on interfaces; run small Smurfs/Jev, STALE/CUP-Mem, and travel pilots. Verify service access, cost, lawful inputs, and one complete trace; freeze scope. \\[5pt]
+\textbf{Weeks 2-3: development} & Complete baselines, one intervention, task cases, and shared logging. Refine only on development data; freeze test manifests and protocol. \\[5pt]
+\textbf{Week 4: evaluation} & Run paired comparisons, ablations, and the limited resource sweep. Preserve failures, raw outputs, configurations, and scoring records. \\[5pt]
+\textbf{Week 5: delivery} & Cross-reproduce key results; assemble the report, poster, and demonstration; verify all contribution claims against artifacts. \\[5pt]
+\end{longtable}
+\endgroup
+These stages are not official deadlines. Freeze provider access, cost limits, and action scope after the pilot. An unsuccessful action pilot limits conclusions to memory and controlled cross-role tests. Disclose any Jev replacement explicitly.
+
+Deliver code, versioned configurations/task cases, source-linked traces, analysis, and reproduction instructions. Submit a LaTeX report with individual contributions, GitHub source, and a poster presentation \cite{course2026}. Report positive or negative results; follow the confirmed course format.
+
+\clearpage
 \begin{thebibliography}{99}
-\small
-\bibitem{smurfs2025}Junzhi Chen, Juhao Liang, Benyou Wang. Smurfs: Multi-Agent System using Context-Efficient DFSDT for Tool Planning. 2025. NAACL, pp. 3281-3298. \href{https://aclanthology.org/2025.naacl-long.169/}{[source]}
-\bibitem{tiermem2026}Qiming Zhu, Shunian Chen, Rui Yu et al.. From Lossy to Verified: A Provenance-Aware Tiered Memory for Agents. 2026. arXiv:2602.17913. \href{https://arxiv.org/abs/2602.17913}{[source]}
-\bibitem{jev2026}FreedomIntelligence. Jev TierMem: Lightweight Agent Memory. 2026. Software documentation; accessed 2026-10-27. \href{https://github.com/FreedomIntelligence/Tiermem/tree/d0d3896e917117ba0fcc1501e2b2dae891d2a2e3/jev_tiermem}{[source]}
-\bibitem{longmemeval2025}Di Wu, Hongwei Wang, Wenhao Yu et al.. LongMemEval: Benchmarking Chat Assistants on Long-Term Interactive Memory. 2025. arXiv:2410.10813. \href{https://arxiv.org/abs/2410.10813}{[source]}
-\bibitem{memoryarena2026}Zexue He, Yu Wang, Churan Zhi et al.. MemoryArena: Benchmarking Agent Memory in Interdependent Multi-Session Agentic Tasks. 2026. arXiv:2602.16313. \href{https://arxiv.org/abs/2602.16313}{[source]}
-\bibitem{mast2025}Mert Cemri, Melissa Z. Pan, Shuyi Yang et al.. Why Do Multi-Agent LLM Systems Fail?. 2025. arXiv:2503.13657. \href{https://arxiv.org/abs/2503.13657}{[source]}
-\bibitem{governed2026}Yanki Margalit, Nurit Cohen-Inger, Erni Avram et al.. Governed Shared Memory for Multi-Agent LLM Systems. 2026. arXiv:2606.24535. \href{https://arxiv.org/abs/2606.24535}{[source]}
-\bibitem{deepagents2026}LangChain. Deep Agents Overview. 2026. Official software documentation; accessed 2026-10-27. \href{https://docs.langchain.com/oss/python/deepagents/overview}{[source]}
-\bibitem{memoryagentbench2026}Yuanzhe Hu, Yu Wang, Julian McAuley. Evaluating Memory in LLM Agents via Incremental Multi-Turn Interactions. 2026. arXiv:2507.05257. \href{https://arxiv.org/abs/2507.05257}{[source]}
-\bibitem{stale2026}Hanxiang Chao, Yihan Bai, Rui Sheng et al.. STALE: Can LLM Agents Know When Their Memories Are No Longer Valid?. 2026. arXiv:2605.06527. \href{https://arxiv.org/abs/2605.06527}{[source]}
-\bibitem{magentic2024}Adam Fourney, Gagan Bansal, Hussein Mozannar et al.. Magentic-One: A Generalist Multi-Agent System for Solving Complex Tasks. 2024. arXiv:2411.04468. \href{https://arxiv.org/abs/2411.04468}{[source]}
-\bibitem{twinmarket2025}Yuzhe Yang, Yifei Zhang, Minghao Wu et al.. TwinMarket: A Scalable Behavioral and Social Simulation for Financial Markets. 2025. arXiv:2502.01506. \href{https://arxiv.org/abs/2502.01506}{[source]}
-\bibitem{easymed2025}Bingquan Zhang, Xiaoxiao Liu, Yuchi Wang et al.. Human or LLM as Standardized Patients? A Comparative Study in Medical Education. 2025. arXiv:2511.14783. \href{https://arxiv.org/abs/2511.14783}{[source]}
-\bibitem{amem2025}Wujiang Xu, Zujie Liang, Kai Mei et al.. A-Mem: Agentic Memory for LLM Agents. 2025. arXiv:2502.12110. \href{https://arxiv.org/abs/2502.12110}{[source]}
-\bibitem{mem02025}Prateek Chhikara, Dev Khant, Saket Aryan et al.. Mem0: Building Production-Ready AI Agents with Scalable Long-Term Memory. 2025. arXiv:2504.19413. \href{https://arxiv.org/abs/2504.19413}{[source]}
-\bibitem{course2026}NLP Course, CUHK-Shenzhen. CSC5051/CSC6052/MDS5110 Natural Language Processing, Fall 2026. 2026. Course website; accessed 2026-10-27. \href{https://nlp-course-cuhksz.github.io/}{[source]}
+\fontsize{10}{12.5}\selectfont
+\setlength{\itemsep}{7pt}
+\bibitem{smurfs2025}Junzhi Chen, Juhao Liang, Benyou Wang. Smurfs: Multi-Agent System using Context-Efficient DFSDT for Tool Planning. 2025. NAACL, pp. 3281-3298. \href{https://aclanthology.org/2025.naacl-long.169/}{[Paper]} \href{https://github.com/FreedomIntelligence/Smurfs}{[Code]}
+\bibitem{tiermem2026}Qiming Zhu, Shunian Chen, Rui Yu et al.. From Lossy to Verified: A Provenance-Aware Tiered Memory for Agents. 2026. arXiv:2602.17913. \href{https://arxiv.org/abs/2602.17913}{[Paper]} \href{https://github.com/FreedomIntelligence/Tiermem}{[Code]}
+\bibitem{jev2026}FreedomIntelligence. Jev TierMem: Lightweight Agent Memory. 2026. Software documentation; accessed 2026-10-27. \href{https://github.com/FreedomIntelligence/Tiermem/tree/d0d3896e917117ba0fcc1501e2b2dae891d2a2e3/jev_tiermem}{[Code]}
+\bibitem{longmemeval2025}Di Wu, Hongwei Wang, Wenhao Yu et al.. LongMemEval: Benchmarking Chat Assistants on Long-Term Interactive Memory. 2025. arXiv:2410.10813. \href{https://arxiv.org/abs/2410.10813}{[Paper]} \href{https://github.com/xiaowu0162/LongMemEval}{[Code]} \href{https://huggingface.co/datasets/xiaowu0162/longmemeval-cleaned}{[Data]}
+\bibitem{memoryarena2026}Zexue He, Yu Wang, Churan Zhi et al.. MemoryArena: Benchmarking Agent Memory in Interdependent Multi-Session Agentic Tasks. 2026. arXiv:2602.16313. \href{https://arxiv.org/abs/2602.16313}{[Paper]} \href{https://github.com/ZexueHe/MemoryArena}{[Code]} \href{https://huggingface.co/datasets/ZexueHe/memoryarena}{[Data]}
+\bibitem{mast2025}Mert Cemri, Melissa Z. Pan, Shuyi Yang et al.. Why Do Multi-Agent LLM Systems Fail?. 2025. arXiv:2503.13657. \href{https://arxiv.org/abs/2503.13657}{[Paper]} \href{https://github.com/multi-agent-systems-failure-taxonomy/MAST}{[Code]} \href{https://huggingface.co/datasets/mcemri/MAST-Data}{[Data]}
+\bibitem{governed2026}Yanki Margalit, Nurit Cohen-Inger, Erni Avram et al.. Governed Shared Memory for Multi-Agent LLM Systems. 2026. arXiv:2606.24535. \href{https://arxiv.org/abs/2606.24535}{[Paper]} \href{https://github.com/caura-ai/caura}{[Code]}
+\bibitem{deepagents2026}LangChain. Deep Agents Overview. 2026. Official software documentation; accessed 2026-10-27. \href{https://docs.langchain.com/oss/python/deepagents/overview}{[Docs]} \href{https://github.com/langchain-ai/deepagents}{[Code]}
+\bibitem{memoryagentbench2026}Yuanzhe Hu, Yu Wang, Julian McAuley. Evaluating Memory in LLM Agents via Incremental Multi-Turn Interactions. 2026. arXiv:2507.05257. \href{https://arxiv.org/abs/2507.05257}{[Paper]} \href{https://github.com/HUST-AI-HYZ/MemoryAgentBench}{[Code]} \href{https://huggingface.co/datasets/ai-hyz/MemoryAgentBench}{[Data]}
+\bibitem{stale2026}Hanxiang Chao, Yihan Bai, Rui Sheng et al.. STALE: Can LLM Agents Know When Their Memories Are No Longer Valid?. 2026. arXiv:2605.06527. \href{https://arxiv.org/abs/2605.06527}{[Paper]} \href{https://github.com/icedreamc/STALE}{[Code]} \href{https://huggingface.co/datasets/STALEproj/STALE}{[Data]}
+\bibitem{magentic2024}Adam Fourney, Gagan Bansal, Hussein Mozannar et al.. Magentic-One: A Generalist Multi-Agent System for Solving Complex Tasks. 2024. arXiv:2411.04468. \href{https://arxiv.org/abs/2411.04468}{[Paper]} \href{https://github.com/microsoft/autogen}{[Code]}
+\bibitem{twinmarket2025}Yuzhe Yang, Yifei Zhang, Minghao Wu et al.. TwinMarket: A Scalable Behavioral and Social Simulation for Financial Markets. 2025. arXiv:2502.01506. \href{https://arxiv.org/abs/2502.01506}{[Paper]} \href{https://github.com/FreedomIntelligence/TwinMarket}{[Code]}
+\bibitem{easymed2025}Bingquan Zhang, Xiaoxiao Liu, Yuchi Wang et al.. Human or LLM as Standardized Patients? A Comparative Study in Medical Education. 2025. arXiv:2511.14783. \href{https://arxiv.org/abs/2511.14783}{[Paper]} \href{https://github.com/FreedomIntelligence/EasyMED}{[Code]}
+\bibitem{amem2025}Wujiang Xu, Zujie Liang, Kai Mei et al.. A-Mem: Agentic Memory for LLM Agents. 2025. arXiv:2502.12110. \href{https://arxiv.org/abs/2502.12110}{[Paper]} \href{https://github.com/agiresearch/A-mem}{[Code]}
+\bibitem{mem02025}Prateek Chhikara, Dev Khant, Saket Aryan et al.. Mem0: Building Production-Ready AI Agents with Scalable Long-Term Memory. 2025. arXiv:2504.19413. \href{https://arxiv.org/abs/2504.19413}{[Paper]} \href{https://github.com/mem0ai/mem0}{[Code]}
+\bibitem{course2026}NLP Course, CUHK-Shenzhen. CSC5051/CSC6052/MDS5110 Natural Language Processing, Fall 2026. 2026. Course website; accessed 2026-10-27. \href{https://nlp-course-cuhksz.github.io/}{[Source]}
+\bibitem{locomo2024}Adyasha Maharana, Dong-Ho Lee, Sergey Tulyakov et al.. Evaluating Very Long-Term Conversational Memory of LLM Agents. 2024. arXiv:2402.17753. \href{https://arxiv.org/abs/2402.17753}{[Paper]} \href{https://github.com/snap-research/locomo}{[Code]}
 \end{thebibliography}
 \end{document}

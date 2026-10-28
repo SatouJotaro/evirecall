@@ -6,7 +6,7 @@
 
 ## Start here
 
-- **[English proposal](docs/proposal.md)** — motivation, technology comparison, related work, method, experiments, and three work packages. [PDF](output/pdf/evirecall-proposal-v0.2.pdf) · [LaTeX](docs/proposal.tex).
+- **[English proposal](docs/proposal.md)** — motivation, selection matrices for agents/memory/data, planned work, experiments, and three work packages. [PDF](output/pdf/evirecall-proposal-v0.3.pdf) · [LaTeX](docs/proposal.tex).
 - **[Execution plan](docs/plan.md)** — ownership, shared interfaces, milestones, report assembly, and verified course requirements.
 
 The [reference index](docs/references.md) and [BibTeX](docs/references.bib) support these two documents. Earlier Chinese documents are historical material in [archive](archive/README.md).
@@ -31,4 +31,6 @@ Edit `docs/proposal.md` and `docs/references.bib`, then regenerate the editable 
 python scripts/build_proposal.py --pdf
 ```
 
-The generated proposal is a working document. Apply the course's confirmed submission template and fill in member details before submission. Course: [CSC5051 / CSC6052 / MDS5110, Fall 2026](https://nlp-course-cuhksz.github.io/).
+The PDF uses blue clickable source links and blue personal-detail placeholders. Edit the `{{...}}` fields in the Markdown source to fill in each member's name, student ID, and university email. Comparison tables and explicit page breaks are generated from that same source.
+
+The generated proposal is a working document. Apply the course's confirmed submission template before submission. Course: [CSC5051 / CSC6052 / MDS5110, Fall 2026](https://nlp-course-cuhksz.github.io/).

@@ -1,6 +1,6 @@
 # References and selection notes
 
-Primary sources reviewed for proposal v0.2, 27 October 2026. Bibliographic metadata: [BibTeX](references.bib). Local source snapshots live in `project/library/`, outside this repository; their manifest records full commits and PDF hashes. Inclusion here does not make a resource a required experiment.
+Primary sources supporting proposal v0.3, 27 October 2026. Bibliographic metadata: [BibTeX](references.bib). Local source snapshots live in `project/library/`, outside this repository; their manifest records full commits and PDF hashes. Inclusion here does not make a resource a required experiment.
 
 <a id="smurfs"></a>
 ## 1. Smurfs: Multi-Agent System using Context-Efficient DFSDT for Tool Planning
@@ -112,9 +112,15 @@ Additional engineering and memory-update reference. Current software has evolved
 
 [Fall 2026 website](https://nlp-course-cuhksz.github.io/) and local Lecture 1, PDF pp.21/27/30/34. The website-linked final-project deck identifies itself as Spring 2026. See the [plan](plan.md#course-deliverables-and-source-conflicts) for source conflicts and submission requirements.
 
+<a id="locomo"></a>
+## 17. Evaluating Very Long-Term Conversational Memory of LLM Agents
+
+LoCoMo is a conversational-memory cross-check and a reference point for TierMem. It is optional in EviRecall. Split by complete conversation rather than arbitrary questions; it does not directly measure multi-agent action success.
+
+[Paper](https://arxiv.org/abs/2402.17753) · [Repository](https://github.com/snap-research/locomo).
+
 ## Supplementary resources
 
-- [Evaluating Very Long-Term Conversational Memory of LLM Agents](https://github.com/snap-research/locomo): Optional dialogue-memory cross-check and TierMem context. Split by complete conversation, not arbitrary questions. Not required in the initial experiment matrix.
 - [LangGraph](https://github.com/langchain-ai/langgraph): State/checkpoint/store reference supporting the engineering alternative. No separate paper is assigned. Framework persistence alone does not verify semantic correctness of recalled facts.
 - [A-MEM paper evaluation implementation](https://github.com/WujiangXu/AgenticMemory): Companion evaluation repository linked by the A-MEM authors. Shares the a-mem.pdf paper; do not count it as a separate paper.
 - [ArgusFleet: Governed Shared Memory evaluation harness](https://github.com/caura-ai/argusfleet): Paper-linked evaluation harness: clone returned Repository not found on 2026-10-27. Paper section 6.2 cites trace commit 2c55bb5. Retain this missing artifact in the manifest rather than replacing it with unrelated code.
