@@ -1,0 +1,13 @@
+LongMemEval official evaluator fixture
+
+Source: https://github.com/xiaowu0162/LongMemEval/blob/9e0b455f4ef0e2ab8f2e582289761153549043fc/src/evaluation/evaluate_qa.py
+Revision: 9e0b455f4ef0e2ab8f2e582289761153549043fc
+Copyright (c) 2024 Di Wu. Distributed under the adjacent MIT LICENSE.
+
+This is an exact pinned source fixture for offline protocol tests. The tests
+extract only get_anscheck_prompt via AST; they never import its SDK dependencies
+or invoke the upstream executable. It permits running tests without cloning the
+upstream repository. LF blob SHA-256:
+ecce9c4c79dc89d99534ac17b383a5cbb5b9f0c69ee98adaf0684742e3d95251
+The exact Windows CRLF checkout variant has SHA-256:
+5085eb9ae08b91c6c4f97c6bea9b8c2d6e55f9ec72c27734cafa0a04f00a430a

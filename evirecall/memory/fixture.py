@@ -33,11 +33,14 @@ class FixtureMemory:
         items: list[EvidenceItem] = []
         used = 0
         for event in reversed(list(self.records.values())):
+            if not event.text.strip():
+                continue
             if len(items) == budget.max_items:
                 break
             if used + len(event.text) > budget.max_characters:
                 continue
             items.append(EvidenceItem(event.source_id, event.text, (event.source_id,),
-                                      event.writer_role, event.timestamp))
+                                      event.writer_role, event.timestamp,
+                                      source_time_raw=event.source_time_raw))
             used += len(event.text)
         return EvidencePacket(tuple(items), route="fixture-recent-observations")

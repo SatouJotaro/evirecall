@@ -1,0 +1,10 @@
+{
+  "agent_backend": "fixture",
+  "memory_backend": "fixture",
+  "condition": "fixture-wiring",
+  "tasks": "../fixtures/public/tasks.jsonl",
+  "budget": {"max_items": 2, "max_characters": 2000},
+  "limits": {"episode_timeout_s": 60, "run_timeout_s": 600, "max_calls": 100, "max_events_per_episode": 1000, "max_attempts": 1, "retry_backoff_s": 0.1, "max_cost_usd": null},
+  "repetition": 1,
+  "history_mode": "sequential"
+}

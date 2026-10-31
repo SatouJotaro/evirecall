@@ -87,7 +87,7 @@ class SetupTests(unittest.TestCase):
                 return super().run(task, memory, budget, emit)
 
         run_tasks(self.tasks, self.labels, self.output, agent_factory=SpyAgent)
-        public_fields = {"dataset", "task_id", "group_id", "session_id", "query", "events", "tools"}
+        public_fields = {"dataset", "task_id", "group_id", "session_id", "query", "events", "tools", "query_time"}
         self.assertTrue(all(fields == public_fields for fields in fields_seen))
 
     def test_failed_runs_remain_in_denominator_and_trace(self):

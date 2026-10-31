@@ -1,0 +1,18 @@
+{
+  "agent_backend": "team_adapters.smurfs:make_agent",
+  "memory_backend": "team_adapters.memory:make_memory",
+  "condition": "pending-real-backend",
+  "tasks": "../data/processed/longmemeval-s-pilot-1/public/tasks.jsonl",
+  "budget": {"max_items": 2, "max_characters": 2000},
+  "limits": {
+    "episode_timeout_s": 120,
+    "run_timeout_s": 300,
+    "max_calls": 20,
+    "max_events_per_episode": 1000,
+    "max_attempts": 1,
+    "retry_backoff_s": 0.1,
+    "max_cost_usd": 0
+  },
+  "repetition": 1,
+  "history_mode": "independent"
+}

@@ -1,10 +1,10 @@
-"""Shared contracts, jointly reviewed by all three owners. No evaluator labels here."""
+"""Shared adapter contracts for team integration. No evaluator labels here."""
 
 from dataclasses import asdict, dataclass
 from datetime import datetime
 from typing import Any, Callable, Literal, Protocol
 
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2
 Status = Literal["completed", "abstained", "failed"]
 
 
@@ -32,14 +32,23 @@ class Observation:
     source_id: str
     text: str
     writer_role: str
-    timestamp: str
+    timestamp: str | None
     kind: Literal["observation", "update"] = "observation"
+    source_time_raw: str | None = None
 
     def __post_init__(self) -> None:
-        for field in ("source_id", "text", "writer_role", "timestamp"):
+        for field in ("source_id", "writer_role"):
             require_text(getattr(self, field), field)
+        if not isinstance(self.text, str):
+            raise ContractError('Observation text must be a string; empty source turns are preserved')
         if self.kind not in ("observation", "update"):
             raise ContractError("Unknown observation kind")
+        if self.source_time_raw is not None:
+            require_text(self.source_time_raw, 'source_time_raw')
+        if self.timestamp is None:
+            require_text(self.source_time_raw, 'source_time_raw when timestamp is unknown')
+            return
+        require_text(self.timestamp, 'timestamp')
         try:
             time = datetime.fromisoformat(self.timestamp.replace("Z", "+00:00"))
         except ValueError as exc:
@@ -49,7 +58,7 @@ class Observation:
 
     @classmethod
     def from_dict(cls, value: dict) -> "Observation":
-        check_fields(value, {"source_id", "text", "writer_role", "timestamp"}, {"kind"})
+        check_fields(value, {"source_id", "text", "writer_role", "timestamp"}, {"kind", "source_time_raw"})
         return cls(**value)
 
 
@@ -62,6 +71,7 @@ class TaskInput:
     query: str
     events: tuple[Observation, ...]
     tools: tuple[str, ...] = ()
+    query_time: str | None = None
 
     def __post_init__(self) -> None:
         for field in ("dataset", "task_id", "group_id", "session_id", "query"):
@@ -70,6 +80,8 @@ class TaskInput:
             raise ContractError("Duplicate source ID within one task")
         for tool in self.tools:
             require_text(tool, "tool")
+        if self.query_time is not None:
+            require_text(self.query_time, 'query_time')
 
     @property
     def group_key(self) -> tuple[str, str]:
@@ -77,7 +89,7 @@ class TaskInput:
 
     @classmethod
     def from_dict(cls, value: dict) -> "TaskInput":
-        check_fields(value, {"dataset", "task_id", "group_id", "session_id", "query", "events"}, {"tools"})
+        check_fields(value, {"dataset", "task_id", "group_id", "session_id", "query", "events"}, {"tools", "query_time"})
         if not isinstance(value["events"], list) or not isinstance(value.get("tools", []), list):
             raise ContractError("events and tools must be arrays")
         fields = dict(value)
@@ -92,6 +104,8 @@ class MemoryScope:
     condition: str
     dataset: str
     group_id: str
+    repetition: int = 1
+    store_path: str | None = None
 
 
 @dataclass(frozen=True)
@@ -121,8 +135,9 @@ class EvidenceItem:
     text: str
     source_ids: tuple[str, ...]
     writer_role: str
-    event_time: str
+    event_time: str | None
     validity: Literal["unreviewed", "current", "superseded", "uncertain"] = "unreviewed"
+    source_time_raw: str | None = None
 
 
 @dataclass(frozen=True)

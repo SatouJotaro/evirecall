@@ -1,0 +1,2 @@
+# Preserve the pinned upstream evaluator, including its original whitespace.
+tests/fixtures/longmemeval/src/evaluation/evaluate_qa.py text eol=lf -whitespace
