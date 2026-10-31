@@ -1,0 +1,16 @@
+{
+  "endpoint": "https://api.openai.com/v1/chat/completions",
+  "api_key_env": "OPENAI_API_KEY",
+  "model": "gpt-4o-2024-08-06",
+  "official_source_dir": "../vendor/longmemeval",
+  "request_timeout_s": 30,
+  "limits": {
+    "episode_timeout_s": 45,
+    "run_timeout_s": 300,
+    "max_calls": 10,
+    "max_events_per_episode": 1000,
+    "max_attempts": 1,
+    "retry_backoff_s": 0.1,
+    "max_cost_usd": 0
+  }
+}

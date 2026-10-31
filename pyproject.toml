@@ -14,3 +14,6 @@ evirecall = "evirecall.cli:main"
 
 [tool.setuptools.packages.find]
 include = ["evirecall*"]
+
+[tool.setuptools.package-data]
+"evirecall.evaluation" = ["*.txt"]
