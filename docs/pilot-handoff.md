@@ -2,6 +2,18 @@
 
 本轮交付的是可接入、可检查、可核算的工具。观察日期：2026-10-31；当前 checkout 尚未收到可验收的真实 Smurfs/Jev adapter、模型服务配置或支出上限，因此没有运行真实 benchmark。这是本 checkout 的交付状态，不推断同伴在其他分支或本机的实现进度。逐项交付、评审和集成状态见[团队交接登记](team-handoff.md)，分支与 PR 操作见[协作指南](collaboration.md)。
 
+## 同伴拉取后的离线验收
+
+先按[协作指南](collaboration.md)切到实际交付分支。在仓库根目录使用 Python 3.11 或更新版本（团队默认 3.12）运行：
+
+```bash
+python -m unittest tests.test_cli tests.test_pilot -v
+```
+
+这条短验收命令覆盖 fixture 执行→独立评分→离线汇总，合成 LongMemEval 转换/划分→有限 pilot→预测导出→judge 配置检查→完整及部分评分回放，并检查 hash、隔离和篡改拒绝。它使用仓库内的合成样本与固定官方评分源码，不需要 vendor、真实数据、模型服务、凭据或下载，不发起 HTTP 请求。临时输出在测试结束后清理。
+
+成功标准是 11 项测试均显示 `OK`；测试中的零费用 judge 配置应报告 `ready=false`、`judge_calls_performed=false`，这是预期的阻止调用行为。fixture 与手写判分只用于接线验收，不是模型正确率。完整发布检查仍使用 `python -m unittest discover -s tests -v`；完整测试中的 judge 传输场景仅连接本机测试服务。
+
 ## 已准备的任务清单
 
 ```text

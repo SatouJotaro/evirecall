@@ -85,3 +85,5 @@ data/processed/longmemeval-s-split/
 重新验证并修复了 worker 日志末条 JSON 完整但未写入换行的恢复边界：保留原始记录并报告警告，停止启动后续 group，避免追加时拼接损坏日志。记录层与 runner 两项回归先复现问题，修复后通过；全量 **101 项 unittest 通过**（Windows / Python 3.12.0，71.133 秒）。独立 fixture 执行、评分和离线复算得到 3/3 检查通过、0 次物理请求、汇总完全一致；结果位于本地 ignored 的 `runs/publication-fixture-20261031` 与 `runs/publication-evaluation-20261031`。
 
 提交范围检查排除了 `.env`、数据、vendor、运行日志和临时文件。官方 evaluator 的暂存 blob SHA-256 与固定上游一致，原始空白与 MIT 许可保留。此次检查仅覆盖本地 Windows 环境，未启用远端 CI、验证真实模型服务或形成 benchmark 结论。团队交付与管理员后续工作见[交接登记](team-handoff.md)。
+
+实现与交接文档已推送至 `tangchengyu/evaluation-harness`，以 [Draft PR #1](https://github.com/SatouJotaro/evirecall/pull/1) 待评审，尚未合并 `main`。随后在提交 `d75576f` 的全新本地克隆中执行 `python -m unittest tests.test_cli tests.test_pilot -v`，**11 项通过**（14.054 秒）。该克隆无 `.env`、vendor、data、runs 或虚拟环境，验证了接入/评分/pilot 短验收无需这些外部交付；命令和预期结果已补入 [pilot 说明](pilot-handoff.md)。真实 backend、服务配置和预算的交接门槛保持不变。
